@@ -1,15 +1,16 @@
 #include "Languages/Url.h"
 
 #include <numeric>
+#include <stdexcept>
 
 namespace protection {
 
 const std::vector<RegexTokenDefinition> &Url::getTokenDefinitions() const {
-  static const std::vector<RegexTokenDefinition> tokenDefinitions = {{"[^:/?#]+:", TokenType::UrlSchemeCtx},
-                                                                     {"//[^/?#]*", TokenType::UrlAuthorityCtx},
-                                                                     {"[^?#]*", TokenType::UrlPathCtx},
-                                                                     {"\?[^#]*", TokenType::UrlQueryCtx},
-                                                                     {"#.*", TokenType::UrlFragmentCtx}};
+  static const std::vector<RegexTokenDefinition> tokenDefinitions = {{R"([^:/?#]+:)", TokenType::UrlSchemeCtx},
+                                                                     {R"(//[^/?#]*)", TokenType::UrlAuthorityCtx},
+                                                                     {R"([^?#]*)", TokenType::UrlPathCtx},
+                                                                     {R"(\?[^#]*)", TokenType::UrlQueryCtx},
+                                                                     {R"(#.*)", TokenType::UrlFragmentCtx}};
   return tokenDefinitions;
 }
 
@@ -112,6 +113,8 @@ std::vector<Token> Url::splitToken(const std::string &text, size_t lowerBound, c
   if (!lastTokenText.empty()) {
     tokens.push_back(createToken(tokenType, lowerBound, lowerBound + lastTokenText.length() - 1, lastTokenText));
   }
+
+  return tokens;
 }
 
 std::pair<std::string, bool> Url::tryUrlEncode(const std::string &text, TokenType tokenType) {
@@ -152,8 +155,11 @@ std::pair<std::string, bool> Url::tryUrlEncode(const std::string &text, TokenTyp
   case TokenType::UrlFragment:
     encodedText = UrlEncode(text);
     return {encodedText, true};
+
+  default:
+    throw std::runtime_error{"Unsupported Url Token Type:"};
   }
 
   return {encodedText, false};
 }
-}
+} // namespace protection

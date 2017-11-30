@@ -14,15 +14,15 @@ if(uppercase_CMAKE_BUILD_TYPE STREQUAL "DEBUG")
     set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGE} -fsanitize=address -fno-omit-frame-pointer")
 endif()
 
+add_definitions(-Wall -Werror -g -std=c++11 -fPIC -Wno-attributes)
+
 include_directories(include)
 add_subdirectory(lib)
 
 add_library(${PROJECT_NAME} SHARED
-	lib/Range.cpp
+        lib/Range.cpp
         lib/Languages/RegexLanguageProvider.cpp
 		lib/Languages/RegexTokenDefinition.cpp
-		lib/Languages/Token.cpp
-        )
-
+		lib/Languages/Token.cpp)
 
 target_link_libraries(${PROJECT_NAME} FilePath Url)

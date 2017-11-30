@@ -4,15 +4,14 @@
 namespace protection {
 
 const std::vector<RegexTokenDefinition> &FilePath::getTokenDefinitions() const {
-  static const std::string disallowedSymbols = "<>:"
-                                               "/\\\|\?\*\x00-\x1f";
+  static const std::string disallowedSymbols = R"(<>:""/\\\|\?\*\x00-\x1f)";
 
   static const std::vector<RegexTokenDefinition> tokenDefinitions = {
-      {"[\\/]+", TokenType::FilePathSeparator},
-      {"[a-zA-Z]+[\$:](?=[\\/])", TokenType::FilePathDeviceID},
-      {"[^" + disallowedSymbols + "]+", TokenType::FilePathFSEntryName},
-      {":+\$[^" + disallowedSymbols + "]+", TokenType::FilePathNTFSAttribute},
-      {disallowedSymbols, TokenType::FilePathDissallowedSymbol}};
+      {R"([\\/]+)", TokenType::FilePathSeparator},
+      {R"([a-zA-Z]+[\$:](?=[\\/]))", TokenType::FilePathDeviceID},
+      {R"([^)" + disallowedSymbols + "]+", TokenType::FilePathFSEntryName},
+      {R"(:+\$[^)" + disallowedSymbols + "]+", TokenType::FilePathNTFSAttribute},
+      {"[" + disallowedSymbols + "]", TokenType::FilePathDissallowedSymbol}};
 
   return tokenDefinitions;
 }
@@ -28,4 +27,4 @@ bool FilePath::isTrivial(TokenType type, const std::string &text) const {
 }
 
 TokenType FilePath::getErrorTokenType() const { return TokenType::FilePathError; }
-}
+} // namespace protection

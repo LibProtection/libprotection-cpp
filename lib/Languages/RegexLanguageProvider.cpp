@@ -13,7 +13,6 @@ std::vector<Token> RegexLanguageProvider::tokenize(const std::string &text, size
     bool isMatched{false};
 
     for (const auto &tokenDefinition : getTokenDefinitions()) {
-      size_t matchedLength;
       auto m = tokenDefinition.tryMatch(str);
       if (m.second && (m.first != 0)) {
         auto matchedLength = m.first;
@@ -42,5 +41,6 @@ std::vector<Token> RegexLanguageProvider::tokenize(const std::string &text, size
       tokens.push_back(token);
     }
   }
+  return tokens;
 }
-}
+} // namespace protection
