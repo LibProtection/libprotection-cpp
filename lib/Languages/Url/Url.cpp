@@ -58,8 +58,8 @@ std::vector<Token> Url::tokenize(const std::string &text, size_t offset) {
   }
   return {};
 }
-Token Url::createToken(TokenType type, size_t lowerBound, size_t upperBound, const std::string &text) const {
 
+Token Url::createToken(TokenType type, size_t lowerBound, size_t upperBound, const std::string &text) const {
   return Token(LanguageProviderType::Url, type, lowerBound, upperBound, text, isTrivial(type, text));
 }
 
