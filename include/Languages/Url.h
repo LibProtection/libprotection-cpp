@@ -5,6 +5,23 @@
 #include "RegexTokenDefinition.h"
 
 namespace protection {
+enum UrlTokenType {
+  Error,
+  Separator,
+  Scheme,
+  AuthorityEntry,
+  PathEntry,
+  QueryEntry,
+  Fragment,
+
+  // Non-terminals
+  SchemeCtx,
+  AuthorityCtx,
+  PathCtx,
+  QueryCtx,
+  FragmentCtx
+};
+
 class Url final : public RegexLanguageProvider {
 public:
   std::vector<Token> tokenize(const std::string &text, size_t offset = 0) override;
@@ -26,6 +43,6 @@ private:
 
   std::string UrlEncode(const std::string &text) { return text; }
 };
-}
+} // namespace protection
 
 #endif // PROTECTION_URL_H

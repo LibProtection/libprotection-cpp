@@ -10,12 +10,9 @@
 namespace protection {
 
 class Token;
-enum class TokenType;
+using TokenType = size_t;
 
-enum class LanguageProviderType {
-  Url,
-  FilePath,
-};
+enum class LanguageProviderType { Url, FilePath, Sql };
 
 class LanguageProvider {
 public:
@@ -28,6 +25,6 @@ protected:
 
   virtual bool isTrivial(TokenType type, const std::string &text) const = 0;
 };
-}
+} // namespace protection
 
 #endif // PROTECTION_LANGUAGEPROVIDER_H

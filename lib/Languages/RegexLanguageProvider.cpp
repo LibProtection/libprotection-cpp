@@ -19,7 +19,7 @@ std::vector<Token> RegexLanguageProvider::tokenize(const std::string &text, size
         isMatched = true;
         auto tokenText = str.substr(0, matchedLength);
 
-        auto token = createToken(TokenType::FilePathFSEntryName, currentPosition + offset,
+        auto token = createToken(tokenDefinition.getType(), currentPosition + offset,
                                  currentPosition + offset + tokenText.length() - 1, tokenText);
 
         str = str.substr(matchedLength);
@@ -33,7 +33,7 @@ std::vector<Token> RegexLanguageProvider::tokenize(const std::string &text, size
     // move to next
     if (!isMatched) {
       auto token =
-          createToken(TokenType::ErrorTokenType, currentPosition + offset, currentPosition + offset, str.substr(0, 1));
+          createToken(getErrorTokenType(), currentPosition + offset, currentPosition + offset, str.substr(0, 1));
 
       str = str.substr(1);
       ++currentPosition;

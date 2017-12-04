@@ -1,7 +1,7 @@
 #ifndef PROTECTION_REGEXTOKENDEFINITION_H
 #define PROTECTION_REGEXTOKENDEFINITION_H
 
-#include "TokenType.h"
+#include "Token.h"
 
 #include <regex>
 #include <string>
@@ -15,9 +15,11 @@ public:
 
   std::pair<size_t, bool> tryMatch(const std::string &text) const;
 
+  TokenType getType() const;
+
 private:
   const std::regex regex;
   TokenType tokenType;
 };
-}
+} // namespace protection
 #endif // PROTECTION_REGEXTOKENDEFINITION_H

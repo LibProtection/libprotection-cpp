@@ -12,4 +12,6 @@ std::pair<size_t, bool> RegexTokenDefinition::tryMatch(const std::string &text) 
   auto result = std::regex_search(text, sm, regex);
   return {(result) ? sm[0].length() : 0, result};
 };
-}
+
+TokenType RegexTokenDefinition::getType() const { return tokenType; }
+} // namespace protection

@@ -6,11 +6,11 @@
 namespace protection {
 
 const std::vector<RegexTokenDefinition> &Url::getTokenDefinitions() const {
-  static const std::vector<RegexTokenDefinition> tokenDefinitions = {{R"([^:/?#]+:)", TokenType::UrlSchemeCtx},
-                                                                     {R"(//[^/?#]*)", TokenType::UrlAuthorityCtx},
-                                                                     {R"([^?#]*)", TokenType::UrlPathCtx},
-                                                                     {R"(\?[^#]*)", TokenType::UrlQueryCtx},
-                                                                     {R"(#.*)", TokenType::UrlFragmentCtx}};
+  static const std::vector<RegexTokenDefinition> tokenDefinitions = {{R"([^:/?#]+:)", UrlTokenType::SchemeCtx},
+                                                                     {R"(//[^/?#]*)", UrlTokenType::AuthorityCtx},
+                                                                     {R"([^?#]*)", UrlTokenType::PathCtx},
+                                                                     {R"(\?[^#]*)", UrlTokenType::QueryCtx},
+                                                                     {R"(#.*)", UrlTokenType::FragmentCtx}};
   return tokenDefinitions;
 }
 
@@ -21,32 +21,32 @@ std::vector<Token> Url::tokenize(const std::string &text, size_t offset) {
     auto lowerBound = token.range.lowerBound;
 
     switch (token.tokenType) {
-    case TokenType::UrlSchemeCtx:
-      for (const auto &subToken : splitToken(tokenText, lowerBound, ":", TokenType::UrlScheme)) {
+    case UrlTokenType::SchemeCtx:
+      for (const auto &subToken : splitToken(tokenText, lowerBound, ":", UrlTokenType::Scheme)) {
         tokens.push_back(subToken);
       }
       break;
 
-    case TokenType::UrlAuthorityCtx:
-      for (const auto &subToken : splitToken(tokenText, lowerBound, "\\/:@", TokenType::UrlAuthorityEntry)) {
+    case UrlTokenType::AuthorityCtx:
+      for (const auto &subToken : splitToken(tokenText, lowerBound, "\\/:@", UrlTokenType::AuthorityEntry)) {
         tokens.push_back(subToken);
       }
       break;
 
-    case TokenType::UrlPathCtx:
-      for (const auto &subToken : splitToken(tokenText, lowerBound, "\\/", TokenType::UrlPathEntry)) {
+    case UrlTokenType::PathCtx:
+      for (const auto &subToken : splitToken(tokenText, lowerBound, "\\/", UrlTokenType::PathEntry)) {
         tokens.push_back(subToken);
       }
       break;
 
-    case TokenType::UrlQueryCtx:
-      for (const auto &subToken : splitToken(tokenText, lowerBound, "?&=", TokenType::UrlQueryEntry)) {
+    case UrlTokenType::QueryCtx:
+      for (const auto &subToken : splitToken(tokenText, lowerBound, "?&=", UrlTokenType::QueryEntry)) {
         tokens.push_back(subToken);
       }
       break;
 
-    case TokenType::UrlFragmentCtx:
-      for (const auto &subToken : splitToken(tokenText, lowerBound, "#", TokenType::UrlFragment)) {
+    case UrlTokenType::FragmentCtx:
+      for (const auto &subToken : splitToken(tokenText, lowerBound, "#", UrlTokenType::Fragment)) {
         tokens.push_back(subToken);
       }
       break;
@@ -82,7 +82,7 @@ std::pair<std::string, bool> Url::trySanitize(const std::string &text, Token con
 
 bool Url::isTrivial(TokenType type, const std::string &text) const { return true; }
 
-TokenType Url::getErrorTokenType() const { return TokenType::UrlError; }
+TokenType Url::getErrorTokenType() const { return UrlTokenType::Error; }
 
 std::vector<Token> Url::splitToken(const std::string &text, size_t lowerBound, const std::string &splitChars,
                                    TokenType tokenType) {
@@ -102,7 +102,7 @@ std::vector<Token> Url::splitToken(const std::string &text, size_t lowerBound, c
         lastTokenText.clear();
       }
 
-      tokens.push_back(createToken(TokenType::UrlSeparator, lowerBound, lowerBound, std::string{ch}));
+      tokens.push_back(createToken(UrlTokenType::Separator, lowerBound, lowerBound, std::string{ch}));
       ++lowerBound;
 
     } else {
@@ -120,7 +120,7 @@ std::vector<Token> Url::splitToken(const std::string &text, size_t lowerBound, c
 std::pair<std::string, bool> Url::tryUrlEncode(const std::string &text, TokenType tokenType) {
   std::string encodedText;
   switch (tokenType) {
-  case TokenType::UrlPathEntry: {
+  case UrlTokenType::PathEntry: {
     std::vector<std::string> fragments;
     std::string::size_type prev_pos = 0;
     std::string::size_type pos = 0;
@@ -151,13 +151,13 @@ std::pair<std::string, bool> Url::tryUrlEncode(const std::string &text, TokenTyp
 
     return {encodedText, true};
   }
-  case TokenType::UrlQueryEntry:
-  case TokenType::UrlFragment:
+  case UrlTokenType::QueryEntry:
+  case UrlTokenType::Fragment:
     encodedText = UrlEncode(text);
     return {encodedText, true};
 
   default:
-    throw std::runtime_error{"Unsupported Url Token Type:"};
+    break;
   }
 
   return {encodedText, false};

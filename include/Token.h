@@ -2,7 +2,6 @@
 #define PROTECTION_TOKEN_H
 
 #include "LanguageProvider.h"
-#include "TokenType.h"
 #include "Range.h"
 
 #include <memory>
@@ -12,6 +11,8 @@ namespace protection {
 
 enum class LanguageProviderType;
 class LanguageProvider;
+
+using TokenType = size_t;
 
 struct Token {
   // LanguageProvider languageProvider;
@@ -26,6 +27,6 @@ struct Token {
         bool isTrivial);
   std::string toString() const;
 };
-}
+} // namespace protection
 
 #endif // PROTECTION_TOKEN_H

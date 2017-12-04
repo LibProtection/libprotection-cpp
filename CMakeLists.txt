@@ -24,8 +24,7 @@ include_directories(${ANTLR4CPP_INCLUDE_DIRS})
 link_directories(${ANTLR4CPP_LIBS})
 message(STATUS "Found antlr4cpp libs: ${ANTLR4CPP_LIBS} and includes: ${ANTLR4CPP_INCLUDE_DIRS}")
 
-add_definitions(-Wall -Werror -g -std=c++11 -fPIC -Wno-attributes)
-remove_definitions(-Werror)
+add_definitions(-Wall -g -std=c++11 -fPIC -Wno-attributes)
 
 include_directories(include)
 add_subdirectory(lib)
@@ -37,4 +36,4 @@ add_library(${PROJECT_NAME} SHARED
 		        lib/Languages/Token.cpp
             lib/Languages/AntrlLanguageProvider.cpp)
 
-target_link_libraries(${PROJECT_NAME} FilePath Url antlr4-runtime)
+target_link_libraries(${PROJECT_NAME} FilePath Url Sql antlr4-runtime)

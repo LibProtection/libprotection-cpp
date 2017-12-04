@@ -10,6 +10,8 @@
 
 namespace protection {
 
+enum FilePathTokenType { Error, DisallowedSymbol, DeviceID, FSEntryName, NTFSAttribute, Separator };
+
 class FilePath final : public RegexLanguageProvider {
 public:
   FilePath() = default;
@@ -26,5 +28,5 @@ private:
 
   TokenType getErrorTokenType() const override;
 };
-}
+} // namespace protection
 #endif // PROTECTION_FILEPATH_H
