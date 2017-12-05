@@ -7,25 +7,38 @@ std::vector<Token> RegexLanguageProvider::tokenize(const std::string &text, size
 
   std::vector<Token> tokens;
 
+  auto mainModeRules = getMainModeRules();
+  std::stack<std::vector<RegexRule>> modeRuleStack;
+  modeRuleStack.push(getMainModeRules());
+
   std::string str = text;
 
   while (!str.empty()) {
     bool isMatched{false};
 
-    for (const auto &tokenDefinition : getTokenDefinitions()) {
-      auto m = tokenDefinition.tryMatch(str);
-      if (m.second && (m.first != 0)) {
-        auto matchedLength = m.first;
+    for (auto &rule : modeRuleStack.top()) {
+      auto match = rule.tryMatch(str);
+      if (match.second && (match.first != 0)) {
+        auto matchedLength = match.first;
         isMatched = true;
-        auto tokenText = str.substr(0, matchedLength);
+        if (rule.isToken()) {
+          auto tokenText = str.substr(0, matchedLength);
 
-        auto token = createToken(tokenDefinition.getType(), currentPosition + offset,
-                                 currentPosition + offset + tokenText.length() - 1, tokenText);
+          auto token = createToken(rule.getType(), currentPosition + offset,
+                                   currentPosition + offset + tokenText.length() - 1, tokenText);
 
-        str = str.substr(matchedLength);
-        currentPosition += matchedLength;
+          str = str.substr(matchedLength);
+          currentPosition += matchedLength;
 
-        tokens.push_back(token);
+          tokens.push_back(token);
+        }
+
+        if (rule.isPopMode()) {
+          modeRuleStack.pop();
+        }
+        if (rule.isPushMode()) {
+          modeRuleStack.push(rule.getModeRules());
+        }
         break;
       }
     }

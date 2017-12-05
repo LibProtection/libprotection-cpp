@@ -2,20 +2,20 @@
 
 namespace protection {
 
-const std::vector<RegexTokenDefinition> &FilePath::getTokenDefinitions() const {
+const std::vector<RegexRule> &FilePath::getMainModeRules() const {
   static const std::string disallowedSymbols = R"(<>:""/\\\|\?\*\x00-\x1f)";
 
-  static const std::vector<RegexTokenDefinition> tokenDefinitions = {
-      {R"([\\/]+)", static_cast<TokenType>(FilePathTokenType::Separator)},
-      {R"([a-zA-Z]+[\$:](?=[\\/]))", static_cast<TokenType>(FilePathTokenType::DeviceID)},
-      {R"([^)" + disallowedSymbols + "]+", static_cast<TokenType>(FilePathTokenType::FSEntryName)},
-      {R"(:+\$[^)" + disallowedSymbols + "]+", static_cast<TokenType>(FilePathTokenType::NTFSAttribute)},
-      {"[" + disallowedSymbols + "]", static_cast<TokenType>(FilePathTokenType::DisallowedSymbol)}};
+  static const std::vector<RegexRule> mainModeRules = {
+      RegexRule::Token(R"([\\/]+)", TOKEN_TYPE(FilePathTokenType::Separator)),
+      RegexRule::Token(R"([a-zA-Z]+[\$:](?=[\\/]))", TOKEN_TYPE(FilePathTokenType::DeviceID)),
+      RegexRule::Token(R"([^)" + disallowedSymbols + "]+", TOKEN_TYPE(FilePathTokenType::FSEntryName)),
+      RegexRule::Token(R"(:+\$[^)" + disallowedSymbols + "]+", TOKEN_TYPE(FilePathTokenType::NTFSAttribute)),
+      RegexRule::Token("[" + disallowedSymbols + "]", TOKEN_TYPE(FilePathTokenType::DisallowedSymbol))};
 
-  return tokenDefinitions;
+  return mainModeRules;
 }
 
-std::pair<std::string, bool> FilePath::trySanitize(const std::string &text, Token context) { return {{}, false}; };
+std::pair<std::string, bool> FilePath::trySanitize(const std::string &text, Token) { return {{}, false}; };
 
 Token FilePath::createToken(TokenType type, size_t lowerBound, size_t upperBound, const std::string &text) const {
   return Token(LanguageProviderType::FilePath, type, lowerBound, upperBound, text, isTrivial(type, text));
@@ -26,5 +26,5 @@ bool FilePath::isTrivial(TokenType type, const std::string &text) const {
          (text.find("..") == std::string::npos);
 }
 
-TokenType FilePath::getErrorTokenType() const { return static_cast<TokenType>(FilePathTokenType::Error); }
+TokenType FilePath::getErrorTokenType() const { return TOKEN_TYPE(FilePathTokenType::Error); }
 } // namespace protection

@@ -32,8 +32,8 @@ add_subdirectory(lib)
 add_library(${PROJECT_NAME} SHARED
             lib/Range.cpp
             lib/Languages/RegexLanguageProvider.cpp
-		        lib/Languages/RegexTokenDefinition.cpp
-		        lib/Languages/Token.cpp
-            lib/Languages/AntrlLanguageProvider.cpp)
+            lib/Languages/Token.cpp
+            lib/Languages/AntrlLanguageProvider.cpp
+            lib/Languages/RegexRule.cpp)
 
 target_link_libraries(${PROJECT_NAME} FilePath Url Sql antlr4-runtime)

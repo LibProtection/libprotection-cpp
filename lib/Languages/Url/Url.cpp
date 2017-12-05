@@ -1,18 +1,40 @@
 #include "Languages/Url.h"
 
 #include <numeric>
-#include <stdexcept>
 
 namespace protection {
 
-const std::vector<RegexTokenDefinition> &Url::getTokenDefinitions() const {
-  static const std::vector<RegexTokenDefinition> tokenDefinitions = {
-      {R"([^:/?#]+:)", static_cast<TokenType>(UrlTokenType::SchemeCtx)},
-      {R"(//[^/?#]*)", static_cast<TokenType>(UrlTokenType::AuthorityCtx)},
-      {R"([^?#]*)", static_cast<TokenType>(UrlTokenType::PathCtx)},
-      {R"(\?[^#]*)", static_cast<TokenType>(UrlTokenType::QueryCtx)},
-      {R"(#.*)", static_cast<TokenType>(UrlTokenType::FragmentCtx)}};
-  return tokenDefinitions;
+const std::vector<RegexRule> &Url::getMainModeRules() const {
+
+  static const std::vector<RegexRule> schemeModeRules = {
+      RegexRule::Token("[^:]+", TOKEN_TYPE(UrlTokenType::Scheme)),
+      RegexRule::TokenPopMode(":", TOKEN_TYPE(UrlTokenType::Separator))};
+
+  static const std::vector<RegexRule> authorityModeRules = {
+      RegexRule::Token("//", TOKEN_TYPE(UrlTokenType::Separator)),
+      RegexRule::Token("[^/@:]+", TOKEN_TYPE(UrlTokenType::AuthorityEntry)),
+      RegexRule::Token("[:@]", TOKEN_TYPE(UrlTokenType::Separator)), RegexRule::NoTokenPopMode("/")};
+
+  static const std::vector<RegexRule> pathModeRules = {RegexRule::Token("/", TOKEN_TYPE(UrlTokenType::Separator)),
+                                                       RegexRule::Token("[^/?#]+", TOKEN_TYPE(UrlTokenType::PathEntry)),
+                                                       RegexRule::NoTokenPopMode("[?#]")};
+
+  static const std::vector<RegexRule> queryModeRules = {
+      RegexRule::Token("\\?", TOKEN_TYPE(UrlTokenType::Separator)),
+      RegexRule::Token("[^?/=&#]+", TOKEN_TYPE(UrlTokenType::QueryEntry)),
+      RegexRule::Token("[=&]", TOKEN_TYPE(UrlTokenType::Separator)), RegexRule::NoTokenPopMode("#")};
+
+  static const std::vector<RegexRule> fragmentModeRules = {
+      RegexRule::Token("#", TOKEN_TYPE(UrlTokenType::Separator)),
+      RegexRule::TokenPopMode("[^#]*", TOKEN_TYPE(UrlTokenType::Fragment))};
+
+  static const std::vector<RegexRule> mainModeRules = {RegexRule::NoTokenPushMode(R"([^:/?#]+:)", schemeModeRules),
+                                                       RegexRule::NoTokenPushMode(R"(//[^/?#]*)", authorityModeRules),
+                                                       RegexRule::NoTokenPushMode(R"([^?#]*)", pathModeRules),
+                                                       RegexRule::NoTokenPushMode(R"(\?[^#]*)", queryModeRules),
+                                                       RegexRule::NoTokenPushMode(R"(#.*)", fragmentModeRules)};
+
+  return mainModeRules;
 }
 
 std::vector<Token> Url::tokenize(const std::string &text, size_t offset) {
@@ -23,36 +45,32 @@ std::vector<Token> Url::tokenize(const std::string &text, size_t offset) {
 
     switch (static_cast<UrlTokenType>(token.tokenType)) {
     case UrlTokenType::SchemeCtx:
-      for (const auto &subToken :
-           splitToken(tokenText, lowerBound, ":", static_cast<TokenType>(UrlTokenType::Scheme))) {
+      for (const auto &subToken : splitToken(tokenText, lowerBound, ":", TOKEN_TYPE(UrlTokenType::Scheme))) {
         tokens.push_back(subToken);
       }
       break;
 
     case UrlTokenType::AuthorityCtx:
       for (const auto &subToken :
-           splitToken(tokenText, lowerBound, "\\/:@", static_cast<TokenType>(UrlTokenType::AuthorityEntry))) {
+           splitToken(tokenText, lowerBound, "\\/:@", TOKEN_TYPE(UrlTokenType::AuthorityEntry))) {
         tokens.push_back(subToken);
       }
       break;
 
     case UrlTokenType::PathCtx:
-      for (const auto &subToken :
-           splitToken(tokenText, lowerBound, "\\/", static_cast<TokenType>(UrlTokenType::PathEntry))) {
+      for (const auto &subToken : splitToken(tokenText, lowerBound, "\\/", TOKEN_TYPE(UrlTokenType::PathEntry))) {
         tokens.push_back(subToken);
       }
       break;
 
     case UrlTokenType::QueryCtx:
-      for (const auto &subToken :
-           splitToken(tokenText, lowerBound, "?&=", static_cast<TokenType>(UrlTokenType::QueryEntry))) {
+      for (const auto &subToken : splitToken(tokenText, lowerBound, "?&=", TOKEN_TYPE(UrlTokenType::QueryEntry))) {
         tokens.push_back(subToken);
       }
       break;
 
     case UrlTokenType::FragmentCtx:
-      for (const auto &subToken :
-           splitToken(tokenText, lowerBound, "#", static_cast<TokenType>(UrlTokenType::Fragment))) {
+      for (const auto &subToken : splitToken(tokenText, lowerBound, "#", TOKEN_TYPE(UrlTokenType::Fragment))) {
         tokens.push_back(subToken);
       }
       break;
@@ -86,9 +104,20 @@ std::pair<std::string, bool> Url::trySanitize(const std::string &text, Token con
   return {{}, true};
 }
 
-bool Url::isTrivial(TokenType type, const std::string &text) const { return true; }
+bool Url::isTrivial(TokenType type, const std::string &text) const {
+  switch (static_cast<UrlTokenType>(type)) {
+  case UrlTokenType::QueryEntry:
+  case UrlTokenType::Fragment:
+    return true;
+  case UrlTokenType::PathEntry:
+    return (text.find("..") == std::string::npos);
+  default:
+    break;
+  }
+  return false;
+}
 
-TokenType Url::getErrorTokenType() const { return static_cast<TokenType>(UrlTokenType::Error); }
+TokenType Url::getErrorTokenType() const { return TOKEN_TYPE(UrlTokenType::Error); }
 
 std::vector<Token> Url::splitToken(const std::string &text, size_t lowerBound, const std::string &splitChars,
                                    TokenType tokenType) {
@@ -108,8 +137,7 @@ std::vector<Token> Url::splitToken(const std::string &text, size_t lowerBound, c
         lastTokenText.clear();
       }
 
-      tokens.push_back(
-          createToken(static_cast<TokenType>(UrlTokenType::Separator), lowerBound, lowerBound, std::string{ch}));
+      tokens.push_back(createToken(TOKEN_TYPE(UrlTokenType::Separator), lowerBound, lowerBound, std::string{ch}));
       ++lowerBound;
 
     } else {
@@ -152,7 +180,7 @@ std::pair<std::string, bool> Url::tryUrlEncode(const std::string &text, TokenTyp
       ++beginIt;
     }
     for (; beginIt != endIt; ++beginIt) {
-      encodedText.insert(std::end(encodedText), {'/'});
+      encodedText.insert(std::end(encodedText), '/');
       encodedText.insert(std::end(encodedText), std::begin(*beginIt), std::end(*beginIt));
     }
 

@@ -1,8 +1,6 @@
 #include "Languages/Sql.h"
 #include "SQLLexer.h"
 
-#include <stdexcept>
-
 namespace protection {
 
 std::pair<std::string, bool> Sql::trySanitize(const std::string &text, Token context) {
