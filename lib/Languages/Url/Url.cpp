@@ -1,4 +1,5 @@
 #include "Languages/Url.h"
+#include "Support/WebUtils.h"
 
 #include <numeric>
 
@@ -168,7 +169,7 @@ std::pair<std::string, bool> Url::tryUrlEncode(const std::string &text, TokenTyp
 
     for (auto &fragment : fragments) {
       if (!fragment.empty()) {
-        fragment = UrlEncode(fragment);
+        fragment = utils::UrlEncode(fragment);
       }
     }
 
@@ -188,7 +189,7 @@ std::pair<std::string, bool> Url::tryUrlEncode(const std::string &text, TokenTyp
   }
   case UrlTokenType::QueryEntry:
   case UrlTokenType::Fragment:
-    encodedText = UrlEncode(text);
+    encodedText = utils::UrlEncode(text);
     return {encodedText, true};
 
   default:
