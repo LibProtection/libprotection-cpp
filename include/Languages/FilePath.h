@@ -10,7 +10,7 @@
 
 namespace protection {
 
-enum FilePathTokenType { Error, DisallowedSymbol, DeviceID, FSEntryName, NTFSAttribute, Separator };
+enum class FilePathTokenType { Error, DisallowedSymbol, DeviceID, FSEntryName, NTFSAttribute, Separator };
 
 class FilePath final : public RegexLanguageProvider {
 public:

@@ -6,7 +6,7 @@
 
 namespace protection {
 
-enum SqlTokenType {
+enum class SqlTokenType {
   Space = 1,
   CommentInput = 2,
   LineComment = 3,
@@ -874,7 +874,7 @@ enum SqlTokenType {
   Raiserror = 865,
   Rand = 866,
   RandomBytes = 867,
-  SqlRange = 868,
+  Range = 868,
   Rank = 869,
   RatioToReport = 870,
   Raw = 871,
@@ -978,7 +978,7 @@ enum SqlTokenType {
   Semantickeyphrasetable = 969,
   Semanticsimilaritydetailstable = 970,
   Semanticsimilaritytable = 971,
-  SqlSeparator = 972,
+  Separator = 972,
   Sequence = 973,
   Sequential = 974,
   Serializable = 975,
@@ -1392,7 +1392,7 @@ enum SqlTokenType {
   StringUserName = 1383,
   LocalId = 1384,
   GlobalId = 1385,
-  SqlError = 1386
+  Error = 1386
 };
 
 class Sql final : public AntlrLanguageProvider {

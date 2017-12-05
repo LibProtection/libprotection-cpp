@@ -5,7 +5,8 @@
 #include "RegexTokenDefinition.h"
 
 namespace protection {
-enum UrlTokenType {
+
+enum class UrlTokenType {
   Error,
   Separator,
   Scheme,

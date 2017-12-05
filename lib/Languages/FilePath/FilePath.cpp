@@ -6,11 +6,11 @@ const std::vector<RegexTokenDefinition> &FilePath::getTokenDefinitions() const {
   static const std::string disallowedSymbols = R"(<>:""/\\\|\?\*\x00-\x1f)";
 
   static const std::vector<RegexTokenDefinition> tokenDefinitions = {
-      {R"([\\/]+)", FilePathTokenType ::Separator},
-      {R"([a-zA-Z]+[\$:](?=[\\/]))", FilePathTokenType::DeviceID},
-      {R"([^)" + disallowedSymbols + "]+", FilePathTokenType::FSEntryName},
-      {R"(:+\$[^)" + disallowedSymbols + "]+", FilePathTokenType::NTFSAttribute},
-      {"[" + disallowedSymbols + "]", FilePathTokenType::DisallowedSymbol}};
+      {R"([\\/]+)", static_cast<TokenType>(FilePathTokenType::Separator)},
+      {R"([a-zA-Z]+[\$:](?=[\\/]))", static_cast<TokenType>(FilePathTokenType::DeviceID)},
+      {R"([^)" + disallowedSymbols + "]+", static_cast<TokenType>(FilePathTokenType::FSEntryName)},
+      {R"(:+\$[^)" + disallowedSymbols + "]+", static_cast<TokenType>(FilePathTokenType::NTFSAttribute)},
+      {"[" + disallowedSymbols + "]", static_cast<TokenType>(FilePathTokenType::DisallowedSymbol)}};
 
   return tokenDefinitions;
 }
@@ -22,8 +22,9 @@ Token FilePath::createToken(TokenType type, size_t lowerBound, size_t upperBound
 }
 
 bool FilePath::isTrivial(TokenType type, const std::string &text) const {
-  return (type == FilePathTokenType::FSEntryName) && (text.find("..") == std::string::npos);
+  return (static_cast<FilePathTokenType>(type) == FilePathTokenType::FSEntryName) &&
+         (text.find("..") == std::string::npos);
 }
 
-TokenType FilePath::getErrorTokenType() const { return FilePathTokenType::Error; }
+TokenType FilePath::getErrorTokenType() const { return static_cast<TokenType>(FilePathTokenType::Error); }
 } // namespace protection
