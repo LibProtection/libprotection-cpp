@@ -17,7 +17,7 @@ if(uppercase_CMAKE_BUILD_TYPE STREQUAL "DEBUG")
 endif()
 
 set(ANTLR4CPP_GRAMMAR_PATH "${PROJECT_SOURCE_DIR}/submodules/libprotection-common/grammars")
-set(ANTLR4CPP_JAR_LOCATION ${PROJECT_SOURCE_DIR}/third_party/antlr/antlr-4.7-complete.jar)
+set(ANTLR4CPP_JAR_LOCATION ${PROJECT_SOURCE_DIR}/submodules/libprotection-common/antlr/antlr-4.7-complete.jar)
 
 include(BuildAntlr4Cpp)
 include_directories(${ANTLR4CPP_INCLUDE_DIRS})
