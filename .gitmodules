@@ -2,3 +2,9 @@
 	path = submodules/libprotection-common
 	url = https://github.com/LibProtection/libprotection-common.git
 	branch = dev
+[submodule "submodules/catch2"]
+	path = submodules/catch2
+	url = https://github.com/catchorg/Catch2.git
+[submodule "submodules/antlr4cpp"]
+	path = submodules/antlr4cpp
+	url = https://github.com/antlr/antlr4.git

@@ -16,7 +16,7 @@ if(uppercase_CMAKE_BUILD_TYPE STREQUAL "DEBUG")
   set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGE} -fsanitize=address -fno-omit-frame-pointer")
 endif()
 
-set(ANTLR4CPP_GRAMMAR_PATH "${PROJECT_SOURCE_DIR}/third_party/libprotection-grammars/Antlr")
+set(ANTLR4CPP_GRAMMAR_PATH "${PROJECT_SOURCE_DIR}/submodules/libprotection-common/grammars")
 set(ANTLR4CPP_JAR_LOCATION ${PROJECT_SOURCE_DIR}/third_party/antlr/antlr-4.7-complete.jar)
 
 include(BuildAntlr4Cpp)

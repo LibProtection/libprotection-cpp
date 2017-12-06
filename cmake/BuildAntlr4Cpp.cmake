@@ -1,6 +1,6 @@
 find_package(Java COMPONENTS Runtime REQUIRED)
 
-set(ANTLR4CPP_ROOT ${PROJECT_SOURCE_DIR}/third_party/antlr4cpp)
+set(ANTLR4CPP_ROOT ${PROJECT_SOURCE_DIR}/submodules/antlr4cpp)
 set(ANTLR4CPP_SRC_DIR ${ANTLR4CPP_ROOT}/runtime/Cpp)
 
 # default path for source files
