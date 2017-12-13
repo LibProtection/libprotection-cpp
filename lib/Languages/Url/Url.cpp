@@ -102,7 +102,7 @@ std::pair<std::string, bool> Url::trySanitize(const std::string &text, Token con
     throw std::runtime_error{std::string{"Unsupported URL island: "} + context.toString()};
   }
 
-  return {{}, true};
+  return {{}, false};
 }
 
 bool Url::isTrivial(TokenType type, const std::string &text) const {

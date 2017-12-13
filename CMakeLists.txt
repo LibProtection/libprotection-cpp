@@ -36,4 +36,4 @@ add_library(${PROJECT_NAME} SHARED
             lib/Languages/AntrlLanguageProvider.cpp
             lib/Languages/RegexRule.cpp)
 
-target_link_libraries(${PROJECT_NAME} FilePath Url Sql antlr4-runtime)
+target_link_libraries(${PROJECT_NAME} FilePath Url Sql Html antlr4-runtime)

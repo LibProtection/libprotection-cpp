@@ -13,7 +13,7 @@ class Token;
 using TokenType = size_t;
 #define TOKEN_TYPE(type) static_cast<TokenType>(type)
 
-enum class LanguageProviderType { Url, FilePath, Sql };
+enum class LanguageProviderType { Url, FilePath, Sql, Html, JavaScript };
 
 class LanguageProvider {
 public:

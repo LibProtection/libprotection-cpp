@@ -2,6 +2,7 @@
 #define PROTECTION_URL_H
 
 #include "RegexLanguageProvider.h"
+#include "Single.h"
 
 namespace protection {
 
@@ -23,11 +24,15 @@ enum class UrlTokenType {
 };
 
 class Url final : public RegexLanguageProvider {
+  friend Single<Url>;
+
 public:
   std::vector<Token> tokenize(const std::string &text, size_t offset) override;
   std::pair<std::string, bool> trySanitize(const std::string &text, Token context) override;
 
 private:
+  Url() = default;
+
   bool isTrivial(TokenType type, const std::string &text) const override;
 
   const std::vector<RegexRule> &getMainModeRules() const override;

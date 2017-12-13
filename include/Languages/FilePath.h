@@ -6,21 +6,23 @@
 
 #include "Token.h"
 #include "RegexLanguageProvider.h"
+#include "Single.h"
 
 namespace protection {
 
 enum class FilePathTokenType { Error, DisallowedSymbol, DeviceID, FSEntryName, NTFSAttribute, Separator };
 
 class FilePath final : public RegexLanguageProvider {
-public:
-  FilePath() = default;
+  friend Single<FilePath>;
 
+public:
   std::pair<std::string, bool> trySanitize(const std::string &text, Token) override;
 
-protected:
+private:
+  FilePath() = default;
+
   bool isTrivial(TokenType type, const std::string &text) const override;
 
-private:
   const std::vector<RegexRule> &getMainModeRules() const override;
 
   Token createToken(TokenType type, size_t lowerBound, size_t upperBound, const std::string &text) const override;
