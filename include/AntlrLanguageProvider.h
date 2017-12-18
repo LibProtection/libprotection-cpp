@@ -10,14 +10,14 @@ namespace protection {
 
 class AntlrLanguageProvider : public LanguageProvider {
 public:
-  std::vector<Token> tokenize(const std::string &text, size_t offset) override;
+  std::vector<Token> tokenize(const std::string &text, size_t offset) const override;
 
 protected:
   static const size_t EOF = static_cast<size_t>(-1);
 
-  virtual TokenType convertAntlrTokenType(size_t antlrTokenType) = 0;
+  virtual TokenType convertAntlrTokenType(size_t antlrTokenType) const = 0;
 
-  virtual std::unique_ptr<antlr4::Lexer> createLexer(const std::string &text) = 0;
+  virtual std::unique_ptr<antlr4::Lexer> createLexer(const std::string &text) const = 0;
 };
 
 } // namespace protection

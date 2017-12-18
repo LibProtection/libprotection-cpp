@@ -1398,18 +1398,18 @@ enum class SqlTokenType {
 class Sql final : public AntlrLanguageProvider {
 public:
   Sql() = default;
-  std::pair<std::string, bool> trySanitize(const std::string &text, Token context) override;
+  std::pair<std::string, bool> trySanitize(const std::string &text, Token context) const override;
 
 private:
-  std::pair<std::string, bool> trySqlEncode(const std::string &text, SqlTokenType tokenType);
+  std::pair<std::string, bool> trySqlEncode(const std::string &text, SqlTokenType tokenType) const;
 
   Token createToken(TokenType type, size_t lowerBound, size_t upperBound, const std::string &text) const override;
 
   bool isTrivial(TokenType type, const std::string &text) const override;
 
-  TokenType convertAntlrTokenType(size_t antlrTokenType) override;
+  TokenType convertAntlrTokenType(size_t antlrTokenType) const override;
 
-  std::unique_ptr<antlr4::Lexer> createLexer(const std::string &text) override;
+  std::unique_ptr<antlr4::Lexer> createLexer(const std::string &text) const override;
 };
 
 } // namespace protection

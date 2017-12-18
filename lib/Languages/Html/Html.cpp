@@ -1,4 +1,5 @@
 #include "Languages/Html.h"
+#include "Languages/JavaScript.h"
 #include "Languages/Url.h"
 #include "HTMLLexer.h"
 #include "Support/WebUtils.h"
@@ -7,7 +8,7 @@
 
 namespace protection {
 
-struct IslandDto {
+struct Html::IslandDto {
   LanguageProvider *languageProvider;
   size_t offset;
   std::string text;
@@ -17,17 +18,17 @@ const std::set<std::string> Html::htmlUrlAttributes = {"href",     "src",       
                                                        "codebase", "data",       "xlink:href", "xml:base", "from",
                                                        "to",       "formaction", "action"};
 
-TokenType Html::convertAntlrTokenType(size_t antlrTokenType) { return antlrTokenType; }
+TokenType Html::convertAntlrTokenType(size_t antlrTokenType) const { return antlrTokenType; }
 
 Token Html::createToken(TokenType type, size_t lowerBound, size_t upperBound, const std::string &text) const {
   return Token(LanguageProviderType::Html, type, lowerBound, upperBound, text, isTrivial(type, text));
 }
 
-std::unique_ptr<antlr4::Lexer> Html::createLexer(const std::string &text) {
+std::unique_ptr<antlr4::Lexer> Html::createLexer(const std::string &text) const {
   return std::unique_ptr<html::HTMLLexer>(new html::HTMLLexer(new antlr4::ANTLRInputStream(text)));
 }
 
-std::vector<Token> Html::tokenize(const std::string &text, size_t offset) {
+std::vector<Token> Html::tokenize(const std::string &text, size_t offset) const {
   auto state = HtmlTokenizerState::Insignificant;
   auto insideScriptTag = false;
 
@@ -107,8 +108,8 @@ std::vector<Token> Html::tokenize(const std::string &text, size_t offset) {
   return tokens;
 }
 
-std::unique_ptr<IslandDto> Html::isContextChanged(const Token &htmlToken, HtmlTokenizerState context,
-                                                  bool insideScriptTag) const {
+std::unique_ptr<Html::IslandDto> Html::isContextChanged(const Token &htmlToken, HtmlTokenizerState context,
+                                                        bool insideScriptTag) const {
   std::unique_ptr<IslandDto> islandData;
   switch (context) {
   case HtmlTokenizerState::EventValue: {
@@ -116,9 +117,7 @@ std::unique_ptr<IslandDto> Html::isContextChanged(const Token &htmlToken, HtmlTo
     auto islandText = trimQuotes(htmlToken, offset);
 
     if (!islandText.empty()) {
-      // TODO: change to JavaScript
-      throw std::runtime_error{"JavaScript not implemented yet!"};
-      /// islandData = std::unique_ptr<IslandDto>{new IslandDto{&Single<JavaScript>::instance(), offset, islandText}};
+      islandData = std::unique_ptr<IslandDto>{new IslandDto{&Single<JavaScript>::instance(), offset, islandText}};
     }
 
     break;
@@ -139,11 +138,9 @@ std::unique_ptr<IslandDto> Html::isContextChanged(const Token &htmlToken, HtmlTo
     if (insideScriptTag) {
       switch (static_cast<HtmlTokenType>(htmlToken.tokenType)) {
       case HtmlTokenType::HtmlText:
-        // TODO: change to JavaScript
-        throw std::runtime_error{"JavaScript not implemented yet!"};
-        /// islandData = std::unique_ptr<IslandDto>{
-        ///    new IslandDto{&Single<JavaScript>::instance(), htmlToken.range.lowerBound, htmlToken.text}};
-        /// break;
+        islandData = std::unique_ptr<IslandDto>{
+            new IslandDto{&Single<JavaScript>::instance(), htmlToken.range.lowerBound, htmlToken.text}};
+        break;
 
       case HtmlTokenType::HtmlComment:
         // TODO: implement
@@ -178,7 +175,7 @@ std::string Html::trimQuotes(const Token &token, size_t &offset) const {
   return tokenText;
 }
 
-std::pair<std::string, bool> Html::trySanitize(const std::string &text, Token context) {
+std::pair<std::string, bool> Html::trySanitize(const std::string &text, Token context) const {
   switch (context.languageProviderType) {
   case LanguageProviderType::Html:
     return {htmlEncode(text, static_cast<HtmlTokenType>(context.tokenType)), true};
@@ -189,11 +186,10 @@ std::pair<std::string, bool> Html::trySanitize(const std::string &text, Token co
     }
   } break;
   case LanguageProviderType::JavaScript: {
-    throw std::runtime_error{"JavaScript not implemented yet!"};
-    /// auto ecmaScriptSanitized = Single<JavaScript>::instance().trySanitize(text, context);
-    /// if (ecmaScriptSanitized.second){
-    ///  return {htmlEncode(ecmaScriptSanitized.first, HtmlTokenType::HtmlText), true};
-    ///}
+    auto ecmaScriptSanitized = Single<JavaScript>::instance().trySanitize(text, context);
+    if (ecmaScriptSanitized.second) {
+      return {htmlEncode(ecmaScriptSanitized.first, HtmlTokenType::HtmlText), true};
+    }
   }
   default:
     throw std::runtime_error{"Unsupported HTML island: " + context.toString()};
@@ -202,7 +198,7 @@ std::pair<std::string, bool> Html::trySanitize(const std::string &text, Token co
   return {{}, false};
 }
 
-bool Html::isTrivial(TokenType type, const std::string &text) const {
+bool Html::isTrivial(TokenType type, const std::string &) const {
   switch (static_cast<HtmlTokenType>(type)) {
   case HtmlTokenType::HtmlComment:
   case HtmlTokenType::HtmlConditionalComment:
@@ -221,9 +217,9 @@ bool Html::isTrivial(TokenType type, const std::string &text) const {
 std::string Html::htmlEncode(const std::string &text, HtmlTokenType type) const {
   switch (type) {
   case HtmlTokenType::AttributeValue:
-    return utils::HtmlAttributeEncode(text);
+    return utility::HtmlAttributeEncode(text);
   default:
-    return utils::HtmlEncode(text);
+    return utility::HtmlEncode(text);
   }
 }
 

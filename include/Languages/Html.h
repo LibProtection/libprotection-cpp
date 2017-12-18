@@ -42,25 +42,25 @@ enum class HtmlTokenizerState {
   ResourceValue
 };
 
-struct IslandDto;
-
 class Html final : public AntlrLanguageProvider {
   friend Single<Html>;
 
 public:
-  std::vector<Token> tokenize(const std::string &text, size_t offset) override;
-  std::pair<std::string, bool> trySanitize(const std::string &text, Token context) override;
+  std::vector<Token> tokenize(const std::string &text, size_t offset) const override;
+  std::pair<std::string, bool> trySanitize(const std::string &text, Token context) const override;
 
 private:
   Html() = default;
 
   Token createToken(TokenType type, size_t lowerBound, size_t upperBound, const std::string &text) const override;
 
-  TokenType convertAntlrTokenType(size_t antlrTokenType) override;
+  TokenType convertAntlrTokenType(size_t antlrTokenType) const override;
 
-  std::unique_ptr<antlr4::Lexer> createLexer(const std::string &text) override;
+  std::unique_ptr<antlr4::Lexer> createLexer(const std::string &text) const override;
 
   bool isTrivial(TokenType type, const std::string &text) const override;
+
+  struct IslandDto;
 
   std::unique_ptr<IslandDto> isContextChanged(const Token &htmlToken, HtmlTokenizerState context,
                                               bool insideScriptTag) const;

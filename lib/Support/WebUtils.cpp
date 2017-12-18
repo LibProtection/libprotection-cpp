@@ -8,6 +8,7 @@
 #include <map>
 #include <regex>
 #include <iostream>
+#include <iomanip>
 
 #define HIGH_SURROGATE_START 0xD800
 #define HIGH_SURROGATE_END 0xDBFF
@@ -18,17 +19,17 @@
 #define UNICODE_PLANE16_END 0x10FFFF
 #define UNICODE_REPLACEMENT_CHAR 0xFFFD
 
-namespace utils {
+namespace utility {
 
 bool isSurrogate(uint16_t c) { return c >= HIGH_SURROGATE_START && c <= LOW_SURROGATE_END; }
 
 std::string HtmlAttributeEncode(const std::string &s) { throw std::runtime_error{"Not implemented yet!"}; }
 
-std::string HtmlEncode(const std::string &s, int startPos) {
+std::string HtmlEncode(const std::string &s, size_t startPos) {
   std::stringstream ss;
 
   auto len = s.length();
-  auto i{0};
+  decltype(len) i{0};
   while (i < startPos) {
     ss << s[i++];
   }
@@ -126,11 +127,11 @@ std::string HtmlEncode(const std::string &s, int startPos) {
 /// - special character met;
 /// - surrogate character met;
 /// - the bit mask of the utf8 code point does not satisfy the requirements;
-int indexOfHtmlEncodingChars(const std::string &s, int startPos) {
-  assert(0 <= startPos && startPos <= static_cast<int>(s.length()) && "0 <= startPos && startPos <= s.length()");
+int indexOfHtmlEncodingChars(const std::string &s, size_t startPos) {
+  assert(0 <= startPos && startPos <= s.length() && "0 <= startPos && startPos <= s.length()");
 
   auto len = s.length();
-  for (size_t i = startPos; i < len; ++i) {
+  for (auto i = startPos; i < len; ++i) {
     if (((s[i] & 0x80) == 0) && (s[i] <= '>')) {
       switch (s[i]) {
       case '<':
@@ -452,4 +453,80 @@ std::string UrlDecode(const std::string &s) {
 
   return ss.str();
 }
-} // namespace utils
+
+std::string JavaScriptStringEncode(const std::string &s, bool addDoubleQuotes) {
+  if (s.empty()) {
+    return addDoubleQuotes ? "\"\"" : std::string{};
+  }
+
+  auto len = s.length();
+  bool needEncode = false;
+  char c;
+  for (size_t i = 0; i < len; ++i) {
+    c = s[i];
+
+    if ((c >= 0 && c <= 31) || c == 34 || c == 39 || c == 60 || c == 62 || c == 92) {
+      needEncode = true;
+      break;
+    }
+  }
+
+  if (!needEncode)
+    return addDoubleQuotes ? "\"" + s + "\"" : s;
+
+  std::stringstream ss;
+  if (addDoubleQuotes)
+    ss << '"';
+
+  for (size_t i = 0; i < len; i++) {
+    c = s[i];
+    if ((c >= 0 && c <= 7) || c == 11 || (c >= 14 && c <= 31) || c == 39 || c == 60 || c == 62) {
+      std::ios oldState(nullptr);
+      oldState.copyfmt(ss);
+      ss << "\\u" << std::setfill('0') << std::setw(4) << std::hex << static_cast<int>(c);
+      ss.copyfmt(oldState);
+    } else {
+      switch (c) {
+      case '\b':
+        ss << "\\b";
+        break;
+
+      case '\t':
+        ss << "\\t";
+        break;
+
+      case '\n':
+        ss << "\\n";
+        break;
+
+      case '\f':
+        ss << "\\f";
+        break;
+
+      case '\r':
+        ss << "\\r";
+        break;
+
+      case '\"':
+        ss << "\\\"";
+        break;
+
+      case '\\':
+        ss << "\\\\";
+        break;
+
+      default:
+        ss << c;
+        break;
+      }
+    }
+  }
+
+  if (addDoubleQuotes)
+    ss << '"';
+
+  return ss.str();
+}
+
+std::string JavaScriptStringEncode(const std::string &s) { return JavaScriptStringEncode(s, false); }
+} // namespace utility

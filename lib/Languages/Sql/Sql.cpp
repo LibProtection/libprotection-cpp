@@ -3,7 +3,7 @@
 
 namespace protection {
 
-std::pair<std::string, bool> Sql::trySanitize(const std::string &text, Token context) {
+std::pair<std::string, bool> Sql::trySanitize(const std::string &text, Token context) const {
   switch (context.languageProviderType) {
   case LanguageProviderType::Sql: {
     auto encodeResult = trySqlEncode(text, (SqlTokenType)context.tokenType);
@@ -19,7 +19,7 @@ std::pair<std::string, bool> Sql::trySanitize(const std::string &text, Token con
   return {{}, false};
 }
 
-std::pair<std::string, bool> Sql::trySqlEncode(const std::string &text, SqlTokenType tokenType) {
+std::pair<std::string, bool> Sql::trySqlEncode(const std::string &text, SqlTokenType tokenType) const {
   switch (tokenType) {
   case SqlTokenType::StringLiteral: {
     auto replaceAll = [](std::string &str, const std::string &search, const std::string &replace) {
@@ -66,10 +66,10 @@ bool Sql::isTrivial(TokenType type, const std::string &text) const {
   }
 }
 
-std::unique_ptr<antlr4::Lexer> Sql::createLexer(const std::string &text) {
+std::unique_ptr<antlr4::Lexer> Sql::createLexer(const std::string &text) const {
   return std::unique_ptr<sql::SQLLexer>(new sql::SQLLexer(new antlr4::ANTLRInputStream(text)));
 }
 
-TokenType Sql::convertAntlrTokenType(size_t antlrTokenType) { return antlrTokenType; }
+TokenType Sql::convertAntlrTokenType(size_t antlrTokenType) const { return antlrTokenType; }
 
 } // namespace protection

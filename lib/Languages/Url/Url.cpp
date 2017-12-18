@@ -38,7 +38,7 @@ const std::vector<RegexRule> &Url::getMainModeRules() const {
   return mainModeRules;
 }
 
-std::vector<Token> Url::tokenize(const std::string &text, size_t offset) {
+std::vector<Token> Url::tokenize(const std::string &text, size_t offset) const {
   std::vector<Token> tokens;
   for (const auto &token : RegexLanguageProvider::tokenize(text, offset)) {
     auto tokenText = token.text;
@@ -88,7 +88,7 @@ Token Url::createToken(TokenType type, size_t lowerBound, size_t upperBound, con
   return Token(LanguageProviderType::Url, type, lowerBound, upperBound, text, isTrivial(type, text));
 }
 
-std::pair<std::string, bool> Url::trySanitize(const std::string &text, Token context) {
+std::pair<std::string, bool> Url::trySanitize(const std::string &text, Token context) const {
 
   switch (context.languageProviderType) {
   case LanguageProviderType::Url: {
@@ -121,7 +121,7 @@ bool Url::isTrivial(TokenType type, const std::string &text) const {
 TokenType Url::getErrorTokenType() const { return TOKEN_TYPE(UrlTokenType::Error); }
 
 std::vector<Token> Url::splitToken(const std::string &text, size_t lowerBound, const std::string &splitChars,
-                                   TokenType tokenType) {
+                                   TokenType tokenType) const {
   if (text.empty()) {
     return {};
   }
@@ -153,7 +153,7 @@ std::vector<Token> Url::splitToken(const std::string &text, size_t lowerBound, c
   return tokens;
 }
 
-std::pair<std::string, bool> Url::tryUrlEncode(const std::string &text, TokenType tokenType) {
+std::pair<std::string, bool> Url::tryUrlEncode(const std::string &text, TokenType tokenType) const {
   std::string encodedText;
   switch (static_cast<UrlTokenType>(tokenType)) {
   case UrlTokenType::PathEntry: {
@@ -169,7 +169,7 @@ std::pair<std::string, bool> Url::tryUrlEncode(const std::string &text, TokenTyp
 
     for (auto &fragment : fragments) {
       if (!fragment.empty()) {
-        fragment = utils::UrlEncode(fragment);
+        fragment = utility::UrlEncode(fragment);
       }
     }
 
@@ -189,7 +189,7 @@ std::pair<std::string, bool> Url::tryUrlEncode(const std::string &text, TokenTyp
   }
   case UrlTokenType::QueryEntry:
   case UrlTokenType::Fragment:
-    encodedText = utils::UrlEncode(text);
+    encodedText = utility::UrlEncode(text);
     return {encodedText, true};
 
   default:

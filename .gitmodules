@@ -1,7 +1,7 @@
 [submodule "submodules/libprotection-common"]
 	path = submodules/libprotection-common
 	url = https://github.com/LibProtection/libprotection-common.git
-	branch = dev
+	branch = javascript_cpp
 [submodule "submodules/catch2"]
 	path = submodules/catch2
 	url = https://github.com/catchorg/Catch2.git

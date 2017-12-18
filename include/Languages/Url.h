@@ -27,8 +27,8 @@ class Url final : public RegexLanguageProvider {
   friend Single<Url>;
 
 public:
-  std::vector<Token> tokenize(const std::string &text, size_t offset) override;
-  std::pair<std::string, bool> trySanitize(const std::string &text, Token context) override;
+  std::vector<Token> tokenize(const std::string &text, size_t offset) const override;
+  std::pair<std::string, bool> trySanitize(const std::string &text, Token context) const override;
 
 private:
   Url() = default;
@@ -42,11 +42,9 @@ private:
   Token createToken(TokenType type, size_t lowerBound, size_t upperBound, const std::string &text) const override;
 
   std::vector<Token> splitToken(const std::string &text, size_t lowerBound, const std::string &splitChars,
-                                TokenType type);
+                                TokenType type) const;
 
-  std::pair<std::string, bool> tryUrlEncode(const std::string &text, TokenType tokenType);
-
-  std::string UrlEncode(const std::string &text) { return text; }
+  std::pair<std::string, bool> tryUrlEncode(const std::string &text, TokenType tokenType) const;
 };
 } // namespace protection
 

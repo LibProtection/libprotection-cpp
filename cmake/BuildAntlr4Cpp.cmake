@@ -63,3 +63,12 @@ macro(antlr4cpp_process_grammar
   # export generated include directory
   set(antlr4cpp_include_dirs_${namespace} ${ANTLR4CPP_GENERATED_SRC_DIR}/${namespace})
 endmacro()
+
+# macro for adding grammar into target dependencies
+macro(antlr4_add_grammar
+      namespace
+      grammar)
+  antlr4cpp_process_grammar(${namespace} ${grammar_lexer} ${ANTLR4CPP_GRAMMAR_PATH})
+  add_library(${namespace} STATIC ${antlr4cpp_src_files_${namespace}})
+  add_dependencies(${namespace} ${namespace}_lexer)
+endmacro()

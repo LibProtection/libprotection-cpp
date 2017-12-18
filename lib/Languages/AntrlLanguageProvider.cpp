@@ -2,7 +2,7 @@
 
 namespace protection {
 
-std::vector<Token> AntlrLanguageProvider::tokenize(const std::string &text, size_t offset) {
+std::vector<Token> AntlrLanguageProvider::tokenize(const std::string &text, size_t offset) const {
   auto lexer = createLexer(text);
   auto antlrToken = lexer->nextToken();
 
