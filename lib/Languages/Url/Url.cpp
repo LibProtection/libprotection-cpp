@@ -4,6 +4,7 @@
 #include <numeric>
 
 namespace protection {
+namespace injections {
 
 const std::vector<RegexRule> &Url::getMainModeRules() const {
 
@@ -85,20 +86,16 @@ std::vector<Token> Url::tokenize(const std::string &text, size_t offset) const {
 }
 
 Token Url::createToken(TokenType type, size_t lowerBound, size_t upperBound, const std::string &text) const {
-  return Token(LanguageProviderType::Url, type, lowerBound, upperBound, text, isTrivial(type, text));
+  return Token(this, type, lowerBound, upperBound, text, isTrivial(type, text));
 }
 
 std::pair<std::string, bool> Url::trySanitize(const std::string &text, Token context) const {
-
-  switch (context.languageProviderType) {
-  case LanguageProviderType::Url: {
+  if (dynamic_cast<decltype(this)>(context.languageProvider)) {
     auto encodeResult = tryUrlEncode(text, context.tokenType);
     if (encodeResult.second) {
       return encodeResult;
     }
-    break;
-  }
-  default:
+  } else {
     throw std::runtime_error{std::string{"Unsupported URL island: "} + context.toString()};
   }
 
@@ -198,4 +195,6 @@ std::pair<std::string, bool> Url::tryUrlEncode(const std::string &text, TokenTyp
 
   return {encodedText, false};
 }
+
+} // namespace injections
 } // namespace protection

@@ -3,9 +3,10 @@
 #include "Support/WebUtils.h"
 
 namespace protection {
+namespace injections {
 
 Token JavaScript::createToken(TokenType type, size_t lowerBound, size_t upperBound, const std::string &text) const {
-  return Token(LanguageProviderType::JavaScript, type, lowerBound, upperBound, text, isTrivial(type, text));
+  return Token(this, type, lowerBound, upperBound, text, isTrivial(type, text));
 }
 
 TokenType JavaScript::convertAntlrTokenType(size_t antlrTokenType) const { return antlrTokenType; }
@@ -38,17 +39,15 @@ bool JavaScript::isTrivial(TokenType type, const std::string &) const {
 }
 
 std::pair<std::string, bool> JavaScript::trySanitize(const std::string &text, Token context) const {
-  switch (context.languageProviderType) {
-  case LanguageProviderType::JavaScript: {
+  if (dynamic_cast<decltype(this)>(context.languageProvider)) {
     auto encodeResult = tryJavaScriptEncode(text, context.tokenType);
     if (encodeResult.second) {
       return encodeResult;
     }
-    break;
-  }
-  default:
+  } else {
     throw std::runtime_error{"Unsupported JavaScript island: " + context.toString()};
   }
+
   return {{}, false};
 }
 
@@ -76,4 +75,6 @@ std::pair<std::string, bool> JavaScript::tryJavaScriptEncode(const std::string &
 
   return {{}, false};
 }
+
+} // namespace injections
 } // namespace protection

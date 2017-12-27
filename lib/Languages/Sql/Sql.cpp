@@ -2,20 +2,17 @@
 #include "SQLLexer.h"
 
 namespace protection {
+namespace injections {
 
 std::pair<std::string, bool> Sql::trySanitize(const std::string &text, Token context) const {
-  switch (context.languageProviderType) {
-  case LanguageProviderType::Sql: {
+  if (dynamic_cast<decltype(this)>(context.languageProvider)) {
     auto encodeResult = trySqlEncode(text, (SqlTokenType)context.tokenType);
     if (encodeResult.second) {
       return encodeResult;
     }
-    break;
-  }
-  default:
+  } else {
     throw std::runtime_error{"Unsupported SQL island: " + context.toString()};
   }
-
   return {{}, false};
 }
 
@@ -44,7 +41,7 @@ std::pair<std::string, bool> Sql::trySqlEncode(const std::string &text, SqlToken
 }
 
 Token Sql::createToken(TokenType type, size_t lowerBound, size_t upperBound, const std::string &text) const {
-  return Token(LanguageProviderType::Sql, type, lowerBound, upperBound, text, isTrivial(type, text));
+  return Token(this, type, lowerBound, upperBound, text, isTrivial(type, text));
 }
 
 bool Sql::isTrivial(TokenType type, const std::string &text) const {
@@ -72,4 +69,5 @@ std::unique_ptr<antlr4::Lexer> Sql::createLexer(const std::string &text) const {
 
 TokenType Sql::convertAntlrTokenType(size_t antlrTokenType) const { return antlrTokenType; }
 
+} // namespace injections
 } // namespace protection

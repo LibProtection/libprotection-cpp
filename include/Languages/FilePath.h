@@ -9,6 +9,7 @@
 #include "Single.h"
 
 namespace protection {
+namespace injections {
 
 enum class FilePathTokenType { Error, DisallowedSymbol, DeviceID, FSEntryName, NTFSAttribute, Separator };
 
@@ -29,5 +30,7 @@ private:
 
   TokenType getErrorTokenType() const override;
 };
+
+} // namespace injections
 } // namespace protection
 #endif // PROTECTION_FILEPATH_H

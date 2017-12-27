@@ -1,6 +1,7 @@
 #include "RegexLanguageProvider.h"
 
 namespace protection {
+namespace injections {
 
 std::vector<Token> RegexLanguageProvider::tokenize(const std::string &text, size_t offset) const {
   size_t currentPosition{0};
@@ -56,4 +57,6 @@ std::vector<Token> RegexLanguageProvider::tokenize(const std::string &text, size
   }
   return tokens;
 }
+
+} // namespace injections
 } // namespace protection

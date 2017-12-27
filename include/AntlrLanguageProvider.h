@@ -7,6 +7,7 @@
 #include <memory>
 
 namespace protection {
+namespace injections {
 
 class AntlrLanguageProvider : public LanguageProvider {
 public:
@@ -20,6 +21,7 @@ protected:
   virtual std::unique_ptr<antlr4::Lexer> createLexer(const std::string &text) const = 0;
 };
 
+} // namespace injections
 } // namespace protection
 
 #endif // PROTECTION_ANTLRLANGUAGEPROVIDER_H

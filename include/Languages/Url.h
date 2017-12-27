@@ -5,6 +5,7 @@
 #include "Single.h"
 
 namespace protection {
+namespace injections {
 
 enum class UrlTokenType {
   Error,
@@ -28,6 +29,7 @@ class Url final : public RegexLanguageProvider {
 
 public:
   std::vector<Token> tokenize(const std::string &text, size_t offset) const override;
+
   std::pair<std::string, bool> trySanitize(const std::string &text, Token context) const override;
 
 private:
@@ -46,6 +48,8 @@ private:
 
   std::pair<std::string, bool> tryUrlEncode(const std::string &text, TokenType tokenType) const;
 };
+
+} // namespace injections
 } // namespace protection
 
 #endif // PROTECTION_URL_H

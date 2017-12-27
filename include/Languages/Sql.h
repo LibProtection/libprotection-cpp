@@ -5,6 +5,7 @@
 #include "Token.h"
 
 namespace protection {
+namespace injections {
 
 enum class SqlTokenType {
   Space = 1,
@@ -1398,6 +1399,7 @@ enum class SqlTokenType {
 class Sql final : public AntlrLanguageProvider {
 public:
   Sql() = default;
+
   std::pair<std::string, bool> trySanitize(const std::string &text, Token context) const override;
 
 private:
@@ -1412,6 +1414,7 @@ private:
   std::unique_ptr<antlr4::Lexer> createLexer(const std::string &text) const override;
 };
 
+} // namespace injections
 } // namespace protection
 
 #endif // PROTECTION_SQL_H

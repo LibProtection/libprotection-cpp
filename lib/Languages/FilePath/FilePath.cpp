@@ -1,6 +1,7 @@
 #include "Languages/FilePath.h"
 
 namespace protection {
+namespace injections {
 
 const std::vector<RegexRule> &FilePath::getMainModeRules() const {
   static const std::string disallowedSymbols = R"(<>:""/\\\|\?\*\x00-\x1f)";
@@ -18,7 +19,7 @@ const std::vector<RegexRule> &FilePath::getMainModeRules() const {
 std::pair<std::string, bool> FilePath::trySanitize(const std::string &text, Token) const { return {{}, false}; };
 
 Token FilePath::createToken(TokenType type, size_t lowerBound, size_t upperBound, const std::string &text) const {
-  return Token(LanguageProviderType::FilePath, type, lowerBound, upperBound, text, isTrivial(type, text));
+  return Token(this, type, lowerBound, upperBound, text, isTrivial(type, text));
 }
 
 bool FilePath::isTrivial(TokenType type, const std::string &text) const {
@@ -27,4 +28,6 @@ bool FilePath::isTrivial(TokenType type, const std::string &text) const {
 }
 
 TokenType FilePath::getErrorTokenType() const { return TOKEN_TYPE(FilePathTokenType::Error); }
+
+} // namespace injections
 } // namespace protection

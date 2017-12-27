@@ -15,7 +15,7 @@ bool Range::overlaps(const Range &range) const {
 
 std::string Range::toString() const {
   std::stringstream ss;
-  ss << lowerBound << ".." << upperBound;
+  ss << "[" << lowerBound << ".." << upperBound << "]";
   return ss.str();
 }
 

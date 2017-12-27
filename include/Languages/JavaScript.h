@@ -6,6 +6,7 @@
 #include "Single.h"
 
 namespace protection {
+namespace injections {
 
 enum class JavaScriptTokenType {
   RegularExpressionLiteral = 1,
@@ -134,5 +135,6 @@ private:
   std::pair<std::string, bool> tryJavaScriptEncode(const std::string &text, TokenType tokenType) const;
 };
 
+} // namespace injections
 } // namespace protection
 #endif // PROTECTION_JAVASCRIPT_H

@@ -1,6 +1,7 @@
 #include "RegexRule.h"
 
 namespace protection {
+namespace injections {
 
 /// Token
 RegexRule::RegexRule(const std::string &regexStr, TokenType type)
@@ -58,4 +59,5 @@ RegexRule RegexRule::NoTokenPushMode(const std::string &regexStr, const std::vec
 
 RegexRule RegexRule::NoTokenPopMode(const std::string &regexStr) { return RegexRule(regexStr, true); }
 
+} // namespace injections
 } // namespace protection

@@ -1,6 +1,7 @@
 #include "AntlrLanguageProvider.h"
 
 namespace protection {
+namespace injections {
 
 std::vector<Token> AntlrLanguageProvider::tokenize(const std::string &text, size_t offset) const {
   auto lexer = createLexer(text);
@@ -17,4 +18,6 @@ std::vector<Token> AntlrLanguageProvider::tokenize(const std::string &text, size
 
   return tokens;
 }
+
+} // namespace injections
 } // namespace protection

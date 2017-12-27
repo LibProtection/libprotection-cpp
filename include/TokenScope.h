@@ -8,9 +8,12 @@
 #include <vector>
 
 namespace protection {
+namespace injections {
+
 struct TokenScope {
   Range range;
   std::vector<Token> tokens;
+
   bool isTrivial() {
     return std::all_of(tokens.begin(), tokens.end(), [](const Token &t) { return t.isTrivial; });
   }
@@ -18,5 +21,6 @@ struct TokenScope {
   explicit TokenScope(Range r) : range{r} {}
 };
 
+} // namespace injections
 } // namespace protection
 #endif // PROTECTION_TOKENSCOPE_H

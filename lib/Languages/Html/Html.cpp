@@ -4,9 +4,8 @@
 #include "HTMLLexer.h"
 #include "Support/WebUtils.h"
 
-#include <algorithm>
-
 namespace protection {
+namespace injections {
 
 struct Html::IslandDto {
   LanguageProvider *languageProvider;
@@ -21,7 +20,7 @@ const std::set<std::string> Html::htmlUrlAttributes = {"href",     "src",       
 TokenType Html::convertAntlrTokenType(size_t antlrTokenType) const { return antlrTokenType; }
 
 Token Html::createToken(TokenType type, size_t lowerBound, size_t upperBound, const std::string &text) const {
-  return Token(LanguageProviderType::Html, type, lowerBound, upperBound, text, isTrivial(type, text));
+  return Token(this, type, lowerBound, upperBound, text, isTrivial(type, text));
 }
 
 std::unique_ptr<antlr4::Lexer> Html::createLexer(const std::string &text) const {
@@ -35,7 +34,7 @@ std::vector<Token> Html::tokenize(const std::string &text, size_t offset) const 
   std::vector<Token> tokens;
 
   for (const auto &token : AntlrLanguageProvider::tokenize(text, offset)) {
-    if (token.languageProviderType == LanguageProviderType::Html) {
+    if (dynamic_cast<decltype(this)>(token.languageProvider)) {
       auto htmlTokenType = static_cast<HtmlTokenType>(token.tokenType);
       switch (state) {
       case HtmlTokenizerState::EventName:
@@ -176,22 +175,19 @@ std::string Html::trimQuotes(const Token &token, size_t &offset) const {
 }
 
 std::pair<std::string, bool> Html::trySanitize(const std::string &text, Token context) const {
-  switch (context.languageProviderType) {
-  case LanguageProviderType::Html:
+  if (dynamic_cast<decltype(this)>(context.languageProvider)) {
     return {htmlEncode(text, static_cast<HtmlTokenType>(context.tokenType)), true};
-  case LanguageProviderType::Url: {
+  } else if (dynamic_cast<const Url *>(context.languageProvider)) {
     auto urlSanitized = Single<Url>::instance().trySanitize(text, context);
     if (urlSanitized.second) {
       return {htmlEncode(urlSanitized.first, HtmlTokenType::AttributeValue), true};
     }
-  } break;
-  case LanguageProviderType::JavaScript: {
+  } else if (dynamic_cast<const JavaScript *>(context.languageProvider)) {
     auto ecmaScriptSanitized = Single<JavaScript>::instance().trySanitize(text, context);
     if (ecmaScriptSanitized.second) {
       return {htmlEncode(ecmaScriptSanitized.first, HtmlTokenType::HtmlText), true};
     }
-  }
-  default:
+  } else {
     throw std::runtime_error{"Unsupported HTML island: " + context.toString()};
   }
 
@@ -223,4 +219,5 @@ std::string Html::htmlEncode(const std::string &text, HtmlTokenType type) const 
   }
 }
 
+} // namespace injections
 } // namespace protection

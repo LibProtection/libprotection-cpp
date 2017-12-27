@@ -8,6 +8,7 @@
 #include <set>
 
 namespace protection {
+namespace injections {
 
 enum class HtmlTokenType {
   HtmlComment = 1,
@@ -47,6 +48,7 @@ class Html final : public AntlrLanguageProvider {
 
 public:
   std::vector<Token> tokenize(const std::string &text, size_t offset) const override;
+
   std::pair<std::string, bool> trySanitize(const std::string &text, Token context) const override;
 
 private:
@@ -72,5 +74,6 @@ private:
   static const std::set<std::string> htmlUrlAttributes;
 };
 
+} // namespace injections
 } // namespace protection
 #endif // PROTECTION_HTML_H
