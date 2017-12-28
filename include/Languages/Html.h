@@ -51,6 +51,8 @@ public:
 
   std::pair<std::string, bool> trySanitize(const std::string &text, Token context) const override;
 
+  std::string tokenTypeToString(TokenType type) const override;
+
 private:
   Html() = default;
 

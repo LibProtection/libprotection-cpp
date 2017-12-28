@@ -29,5 +29,21 @@ bool FilePath::isTrivial(TokenType type, const std::string &text) const {
 
 TokenType FilePath::getErrorTokenType() const { return TOKEN_TYPE(FilePathTokenType::Error); }
 
+std::string FilePath::tokenTypeToString(TokenType type) const {
+  static const std::map<FilePathTokenType, std::string> tokenTypeToStringMap = {
+      {FilePathTokenType::Error, "Error"},
+      {FilePathTokenType::DisallowedSymbol, "DisallowedSymbol"},
+      {FilePathTokenType::DeviceID, "DeviceID"},
+      {FilePathTokenType::FSEntryName, "FSEntryName"},
+      {FilePathTokenType::NTFSAttribute, "NTFSAttribute"},
+      {FilePathTokenType::Separator, "Separator"}};
+
+  auto search = tokenTypeToStringMap.find(static_cast<FilePathTokenType>(type));
+  if (search == tokenTypeToStringMap.end()) {
+    throw std::runtime_error{"Undefined FilePath Token type" + std::to_string(type)};
+  }
+  return search->second;
+}
+
 } // namespace injections
 } // namespace protection

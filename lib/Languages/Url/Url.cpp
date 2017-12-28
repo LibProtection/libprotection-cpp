@@ -196,5 +196,27 @@ std::pair<std::string, bool> Url::tryUrlEncode(const std::string &text, TokenTyp
   return {encodedText, false};
 }
 
+std::string Url::tokenTypeToString(TokenType type) const {
+  static const std::map<UrlTokenType, std::string> tokenTypeToStringMap = {
+      {UrlTokenType::Error, "Error"},
+      {UrlTokenType::Separator, "Separator"},
+      {UrlTokenType::Scheme, "Scheme"},
+      {UrlTokenType::AuthorityEntry, "AuthorityEntry"},
+      {UrlTokenType::PathEntry, "PathEntry"},
+      {UrlTokenType::QueryEntry, "QueryEntry"},
+      {UrlTokenType::Fragment, "Fragment"},
+      {UrlTokenType::SchemeCtx, "SchemeCtx"},
+      {UrlTokenType::AuthorityCtx, "AuthorityCtx"},
+      {UrlTokenType::PathCtx, "PathCtx"},
+      {UrlTokenType::QueryCtx, "QueryCtx"},
+      {UrlTokenType::FragmentCtx, "FragmentCtx"}};
+
+  auto search = tokenTypeToStringMap.find(static_cast<UrlTokenType>(type));
+  if (search == tokenTypeToStringMap.end()) {
+    throw std::runtime_error{"Undefined Url Token type" + std::to_string(type)};
+  }
+  return search->second;
+}
+
 } // namespace injections
 } // namespace protection

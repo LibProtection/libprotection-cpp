@@ -1402,6 +1402,8 @@ public:
 
   std::pair<std::string, bool> trySanitize(const std::string &text, Token context) const override;
 
+  std::string tokenTypeToString(TokenType type) const override;
+
 private:
   std::pair<std::string, bool> trySqlEncode(const std::string &text, SqlTokenType tokenType) const;
 

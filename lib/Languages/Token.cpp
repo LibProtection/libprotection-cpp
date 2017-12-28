@@ -8,7 +8,9 @@ Token::Token(const LanguageProvider *provider, TokenType type, size_t lowerBound
              const std::string &t, bool trivial)
     : languageProvider{provider}, tokenType{type}, text{t}, range{lowerBound, upperBound}, isTrivial{trivial} {}
 
-std::string Token::toString() const { return "\"" + text + "\":" + range.toString(); }
+std::string Token::toString() const {
+  return languageProvider->tokenTypeToString(tokenType) + ":\"" + text + "\":" + range.toString();
+}
 
 } // namespace injections
 } // namespace protection

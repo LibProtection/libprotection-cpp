@@ -219,5 +219,35 @@ std::string Html::htmlEncode(const std::string &text, HtmlTokenType type) const 
   }
 }
 
+std::string Html::tokenTypeToString(TokenType type) const {
+  static const std::map<HtmlTokenType, std::string> tokenTypeToStringMap = {
+      {HtmlTokenType::HtmlComment, "HtmlComment"},
+      {HtmlTokenType::HtmlConditionalComment, "HtmlConditionalComment"},
+      {HtmlTokenType::XmlDeclaration, "XmlDeclaration"},
+      {HtmlTokenType::Cdata, "Cdata"},
+      {HtmlTokenType::Dtd, "Dtd"},
+      {HtmlTokenType::SpecialTag, "SpecialTag"},
+      {HtmlTokenType::TagOpen, "TagOpen"},
+      {HtmlTokenType::HtmlText, "HtmlText"},
+      {HtmlTokenType::ErrorText, "ErrorText"},
+      {HtmlTokenType::TagClose, "TagClose"},
+      {HtmlTokenType::TagSlashClose, "TagSlashClose"},
+      {HtmlTokenType::TagSlash, "TagSlash"},
+      {HtmlTokenType::TagEquals, "TagEquals"},
+      {HtmlTokenType::TagWhiteSpace, "TagWhiteSpace"},
+      {HtmlTokenType::AttributeName, "AttributeName"},
+      {HtmlTokenType::ErrorTag, "ErrorTag"},
+      {HtmlTokenType::AttributeWhiteSpace, "AttributeWhiteSpace"},
+      {HtmlTokenType::AttributeSlash, "AttributeSlash"},
+      {HtmlTokenType::AttributeValue, "AttributeValue"},
+      {HtmlTokenType::ErrorAttribute, "ErrorAttribute"}};
+
+  auto search = tokenTypeToStringMap.find(static_cast<HtmlTokenType>(type));
+  if (search == tokenTypeToStringMap.end()) {
+    throw std::runtime_error{"Undefined Html Token type" + std::to_string(type)};
+  }
+  return search->second;
+}
+
 } // namespace injections
 } // namespace protection
