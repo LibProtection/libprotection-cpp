@@ -11,7 +11,7 @@ namespace injections {
 
 class AntlrLanguageProvider : public LanguageProvider {
 public:
-  std::vector<Token> tokenize(const std::string &text, size_t offset) const override;
+  std::vector<Token> tokenize(const std::string &text, size_t offset = 0) const override;
 
 protected:
   static const size_t EOF = static_cast<size_t>(-1);

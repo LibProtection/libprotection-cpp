@@ -9,7 +9,7 @@ namespace injections {
 
 class RegexLanguageProvider : public LanguageProvider {
 public:
-  std::vector<Token> tokenize(const std::string &text, size_t offset) const override;
+  std::vector<Token> tokenize(const std::string &text, size_t offset = 0) const override;
 
 private:
   virtual const std::vector<RegexRule> &getMainModeRules() const = 0;

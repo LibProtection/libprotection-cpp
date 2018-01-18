@@ -47,7 +47,7 @@ class Html final : public AntlrLanguageProvider {
   friend Single<Html>;
 
 public:
-  std::vector<Token> tokenize(const std::string &text, size_t offset) const override;
+  std::vector<Token> tokenize(const std::string &text, size_t offset = 0) const override;
 
   std::pair<std::string, bool> trySanitize(const std::string &text, Token context) const override;
 

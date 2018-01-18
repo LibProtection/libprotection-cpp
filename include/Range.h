@@ -19,6 +19,7 @@ struct LIBPRROTECTION_EXPORT Range {
   size_t lowerBound;
   size_t upperBound;
   Range(size_t lBound, size_t uBound);
+  size_t length() {return upperBound - lowerBound + 1;}
   bool contains(size_t point) const;
   bool contains(const Range &range) const;
   bool overlaps(const Range &range) const;
