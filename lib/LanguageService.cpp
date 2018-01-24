@@ -15,11 +15,8 @@ std::vector<LanguageService::TokenScope> LanguageService::getTokensScopes(const 
   for (const auto &token : tokens) {
     for (const auto &range : ranges) {
       if (range.overlaps(token.range)) {
-        auto search = scopesMap.find(range);
-        if (search == scopesMap.end()) {
-          scopesMap.emplace(range, TokenScope{range});
-        }
-        search->second.tokens.push_back(token);
+        auto it = scopesMap.insert(std::make_pair(range, TokenScope{range})).first;
+        it->second.tokens.push_back(token);
       }
     }
   }

@@ -14,10 +14,10 @@ namespace injections {
 
 class LanguageService {
 public:
-  template <typename T>
+  template <typename LP>
   static std::pair<std::string, bool> trySanitize(const std::string &text, const std::vector<Range> &taintedRanges) {
     auto sanitizedRanges = std::vector<Range>{};
-    auto languageProvider = Single<T>::instance();
+    auto languageProvider = Single<LP>::instance();
     auto tokens = languageProvider.tokenize(text);
     auto fragments = std::unordered_map<Range, std::string>{};
 
@@ -48,11 +48,11 @@ public:
       sanitizedString.append(text.substr(positionAtText, text.length() - positionAtText));
     }
 
-    return {sanitizedString, Validate<T>(sanitizedString, sanitizedRanges)};
+    return {sanitizedString, Validate<LP>(sanitizedString, sanitizedRanges)};
   }
 
-  template <typename T> static bool Validate(const std::string &text, const std::vector<Range> &ranges) {
-    auto languageProvider = Single<T>::instance();
+  template <typename LP> static bool Validate(const std::string &text, const std::vector<Range> &ranges) {
+    auto languageProvider = Single<LP>::instance();
     auto tokens = languageProvider.tokenize(text);
     auto scopesCount{0};
     auto allTrivial{true};

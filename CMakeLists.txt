@@ -1,5 +1,4 @@
 cmake_minimum_required(VERSION 3.7)
-project(protection)
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 
@@ -24,16 +23,19 @@ include_directories(${ANTLR4CPP_INCLUDE_DIRS})
 link_directories(${ANTLR4CPP_LIBS})
 message(STATUS "Found antlr4cpp libs: ${ANTLR4CPP_LIBS} and includes: ${ANTLR4CPP_INCLUDE_DIRS}")
 
+# fmt header-only usage
+set(FMT_ROOT ${PROJECT_SOURCE_DIR}/submodules/fmt)
+add_subdirectory(${FMT_ROOT} EXCLUDE_FROM_ALL)
+
 add_definitions(-Wall -g -std=c++11 -fPIC -Wno-attributes)
 
 include_directories(include)
+include_directories(submodules)
+
 add_subdirectory(lib)
 
-add_library(${PROJECT_NAME} SHARED
-            lib/Range.cpp
-            lib/Languages/RegexLanguageProvider.cpp
-            lib/Languages/Token.cpp
-            lib/Languages/AntrlLanguageProvider.cpp
-            lib/Languages/RegexRule.cpp)
-
-target_link_libraries(${PROJECT_NAME} FilePath Url Sql Html JavaScript antlr4-runtime)
+enable_testing()
+include(addTest)
+include(precompileCatch)
+precompileCatch(catch)
+add_subdirectory(unittests)
