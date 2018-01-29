@@ -177,7 +177,7 @@ TEST_CASE("Escape") {
   }
 }
 
-TEST_CASE("Format hex") {
+TEST_CASE("FormatHex") {
   std::vector<Range> taintedRanges;
   SECTION("0") {
     REQUIRE("0" == formatTest("{0:x}", taintedRanges, 0));
@@ -548,6 +548,276 @@ TEST_CASE("HashFlag") {
     REQUIRE(1 == taintedRanges.size());
     REQUIRE(0 == taintedRanges[0].lowerBound);
     REQUIRE(3 == taintedRanges[0].upperBound);
+  }
+  SECTION("{0:#} -42.0") {
+    REQUIRE("-42.0000" == formatTest("{0:#}", taintedRanges, -42.0));
+    REQUIRE(1 == taintedRanges.size());
+    REQUIRE(0 == taintedRanges[0].lowerBound);
+    REQUIRE(7 == taintedRanges[0].upperBound);
+  }
+  SECTION("{0:safe:#} -42.0") {
+    REQUIRE("-42.0000" == formatTest("{0:safe:#}", taintedRanges, -42.0));
+    REQUIRE(0 == taintedRanges.size());
+  }
+  SECTION("{0:#:safe} -42.0") {
+    REQUIRE("-42.0000" == formatTest("{0:#:safe}", taintedRanges, -42.0));
+    REQUIRE(0 == taintedRanges.size());
+  }
+}
+TEST_CASE("ZeroFlag") {
+  std::vector<Range> taintedRanges;
+  SECTION("{0:0}") {
+    REQUIRE("42" == formatTest("{0:0}", taintedRanges, 42));
+    REQUIRE(1 == taintedRanges.size());
+    REQUIRE(0 == taintedRanges[0].lowerBound);
+    REQUIRE(1 == taintedRanges[0].upperBound);
+  }
+  SECTION("{0:safe:0}") {
+    REQUIRE("42" == formatTest("{0:safe:0}", taintedRanges, 42));
+    REQUIRE(0 == taintedRanges.size());
+  }
+  SECTION("{0:0:safe}") {
+    REQUIRE("42" == formatTest("{0:0:safe}", taintedRanges, 42));
+    REQUIRE(0 == taintedRanges.size());
+  }
+
+  SECTION("{0:05}") {
+    REQUIRE("-0042" == formatTest("{0:05}", taintedRanges, -42));
+    REQUIRE(1 == taintedRanges.size());
+    REQUIRE(0 == taintedRanges[0].lowerBound);
+    REQUIRE(4 == taintedRanges[0].upperBound);
+  }
+  SECTION("{0:safe:05}") {
+    REQUIRE("-0042" == formatTest("{0:safe:05}", taintedRanges, -42));
+    REQUIRE(0 == taintedRanges.size());
+  }
+  SECTION("{0:05:safe}") {
+    REQUIRE("-0042" == formatTest("{0:05:safe}", taintedRanges, -42));
+    REQUIRE(0 == taintedRanges.size());
+  }
+  SECTION("{0:05}u") {
+    REQUIRE("00042" == formatTest("{0:05}", taintedRanges, 42u));
+    REQUIRE(1 == taintedRanges.size());
+    REQUIRE(0 == taintedRanges[0].lowerBound);
+    REQUIRE(4 == taintedRanges[0].upperBound);
+  }
+  SECTION("{0:safe:05}u") {
+    REQUIRE("00042" == formatTest("{0:safe:05}", taintedRanges, 42u));
+    REQUIRE(0 == taintedRanges.size());
+  }
+  SECTION("{0:05:safe}u") {
+    REQUIRE("00042" == formatTest("{0:05:safe}", taintedRanges, 42u));
+    REQUIRE(0 == taintedRanges.size());
+  }
+  SECTION("{0:0") { REQUIRE_THROWS_WITH(formatTest("{0:0", taintedRanges, 'c'), "missing '}' in format string"); }
+  SECTION("{0:safe:0") {
+    REQUIRE_THROWS_WITH(formatTest("{0:safe:0", taintedRanges, 'c'), "missing '}' in format string");
+  }
+  SECTION("{0:0:safe") {
+    REQUIRE_THROWS_WITH(formatTest("{0:0:safe", taintedRanges, 'c'), "missing '}' in format string");
+  }
+  SECTION("{0:05}c") {
+    REQUIRE_THROWS_WITH(formatTest("{0:05}", taintedRanges, 'c'), "invalid format specifier for char");
+  }
+  SECTION("{0:safe:05}c") {
+    REQUIRE_THROWS_WITH(formatTest("{0:safe:05}", taintedRanges, 'c'), "invalid format specifier for char");
+  }
+  SECTION("{0:05:safe}c") {
+    REQUIRE_THROWS_WITH(formatTest("{0:05:safe}", taintedRanges, 'c'), "invalid format specifier for char");
+  }
+  SECTION("{0:05}abc") {
+    REQUIRE_THROWS_WITH(formatTest("{0:05}", taintedRanges, "abc"), "format specifier '0' requires numeric argument");
+  }
+  SECTION("{0:safe:05}abc") {
+    REQUIRE_THROWS_WITH(formatTest("{0:safe:05}", taintedRanges, "abc"),
+                        "format specifier '0' requires numeric argument");
+  }
+  SECTION("{0:05:safe}abc") {
+    REQUIRE_THROWS_WITH(formatTest("{0:05:safe}", taintedRanges, "abc"),
+                        "format specifier '0' requires numeric argument");
+  }
+  SECTION("{0:05}reinterpret_cast") {
+    REQUIRE_THROWS_WITH(formatTest("{0:05}", taintedRanges, reinterpret_cast<void *>(0x42)),
+                        "format specifier '0' requires numeric argument");
+  }
+  SECTION("{0:safe:05}reinterpret_cast") {
+    REQUIRE_THROWS_WITH(formatTest("{0:safe:05}", taintedRanges, reinterpret_cast<void *>(0x42)),
+                        "format specifier '0' requires numeric argument");
+  }
+  SECTION("{0:05:safe}reinterpret_cast") {
+    REQUIRE_THROWS_WITH(formatTest("{0:05:safe}", taintedRanges, reinterpret_cast<void *>(0x42)),
+                        "format specifier '0' requires numeric argument");
+  }
+}
+
+TEST_CASE("Width") {
+  std::vector<Range> taintedRanges;
+  SECTION("{0:6}") {
+    REQUIRE("   -42" == formatTest("{0:6}", taintedRanges, -42ll));
+    REQUIRE(1 == taintedRanges.size());
+    REQUIRE(0 == taintedRanges[0].lowerBound);
+    REQUIRE(5 == taintedRanges[0].upperBound);
+  }
+  SECTION("{0:safe:6}") {
+    REQUIRE("   -42" == formatTest("{0:safe:6}", taintedRanges, -42ll));
+    REQUIRE(0 == taintedRanges.size());
+  }
+  SECTION("{0:6:safe}") {
+    REQUIRE("   -42" == formatTest("{0:6:safe}", taintedRanges, -42ll));
+    REQUIRE(0 == taintedRanges.size());
+  }
+  SECTION("{0:12}") {
+    REQUIRE("str         " == formatTest("{0:12}", taintedRanges, "str"));
+    REQUIRE(1 == taintedRanges.size());
+    REQUIRE(0 == taintedRanges[0].lowerBound);
+    REQUIRE(11 == taintedRanges[0].upperBound);
+  }
+  SECTION("{0:safe:12}") {
+    REQUIRE("str         " == formatTest("{0:safe:12}", taintedRanges, "str"));
+    REQUIRE(0 == taintedRanges.size());
+  }
+  SECTION("{0:12:safe}") {
+    REQUIRE("str         " == formatTest("{0:12:safe}", taintedRanges, "str"));
+    REQUIRE(0 == taintedRanges.size());
+  }
+}
+TEST_CASE("Precision") {
+  std::vector<Range> taintedRanges;
+  SECTION("{0:.") { REQUIRE_THROWS_WITH(formatTest("{0:.", taintedRanges, 0), "missing precision specifier"); }
+  SECTION("{0:safe:.") {
+    REQUIRE_THROWS_WITH(formatTest("{0:safe:.", taintedRanges, 0), "missing precision specifier");
+  }
+  SECTION("{0:.:safe") {
+    REQUIRE_THROWS_WITH(formatTest("{0:.:safe", taintedRanges, 0), "missing precision specifier");
+  }
+  SECTION("{0:.2") {
+    REQUIRE_THROWS_WITH(formatTest("{0:.2", taintedRanges, 0), "precision not allowed in integer format specifier");
+  }
+  SECTION("{0:safe:.2") {
+    REQUIRE_THROWS_WITH(formatTest("{0:safe:.2", taintedRanges, 0),
+                        "precision not allowed in integer format specifier");
+  }
+  SECTION("{0:.2:safe") {
+    REQUIRE_THROWS_WITH(formatTest("{0:.2:safe", taintedRanges, 0),
+                        "precision not allowed in integer format specifier");
+  }
+  SECTION("{0:.2}") {
+    REQUIRE("st" == formatTest("{0:.2}", taintedRanges, "str"));
+    REQUIRE(1 == taintedRanges.size());
+    REQUIRE(0 == taintedRanges[0].lowerBound);
+    REQUIRE(1 == taintedRanges[0].upperBound);
+  }
+  SECTION("{0:safe:.2}") {
+    REQUIRE("st" == formatTest("{0:safe:.2}", taintedRanges, "str"));
+    REQUIRE(0 == taintedRanges.size());
+  }
+  SECTION("{0:.2:safe}") {
+    REQUIRE("st" == formatTest("{0:.2:safe}", taintedRanges, "str"));
+    REQUIRE(0 == taintedRanges.size());
+  }
+}
+
+TEST_CASE("FormatBool") {
+  std::vector<Range> taintedRanges;
+  SECTION("{}true") {
+    REQUIRE("true" == formatTest("{}", taintedRanges, true));
+    REQUIRE(1 == taintedRanges.size());
+    REQUIRE(0 == taintedRanges[0].lowerBound);
+    REQUIRE(3 == taintedRanges[0].upperBound);
+  }
+  SECTION("{:safe}true") {
+    REQUIRE("true" == formatTest("{:safe}", taintedRanges, true));
+    REQUIRE(0 == taintedRanges.size());
+  }
+  SECTION("{}false") {
+    REQUIRE("false" == formatTest("{}", taintedRanges, false));
+    REQUIRE(1 == taintedRanges.size());
+    REQUIRE(0 == taintedRanges[0].lowerBound);
+    REQUIRE(4 == taintedRanges[0].upperBound);
+  }
+  SECTION("{:safe}false") {
+    REQUIRE("false" == formatTest("{:safe}", taintedRanges, false));
+    REQUIRE(0 == taintedRanges.size());
+  }
+  SECTION("{:d}") {
+    REQUIRE("1" == formatTest("{:d}", taintedRanges, true));
+    REQUIRE(1 == taintedRanges.size());
+    REQUIRE(0 == taintedRanges[0].lowerBound);
+    REQUIRE(0 == taintedRanges[0].upperBound);
+  }
+  SECTION("{:safe:d}") {
+    REQUIRE("1" == formatTest("{:safe:d}", taintedRanges, true));
+    REQUIRE(0 == taintedRanges.size());
+  }
+  SECTION("{:d:safe}") {
+    REQUIRE("1" == formatTest("{:d:safe}", taintedRanges, true));
+    REQUIRE(0 == taintedRanges.size());
+  }
+  SECTION("{:5}") {
+    REQUIRE("true " == formatTest("{:5}", taintedRanges, true));
+    REQUIRE(1 == taintedRanges.size());
+    REQUIRE(0 == taintedRanges[0].lowerBound);
+    REQUIRE(4 == taintedRanges[0].upperBound);
+  }
+}
+
+TEST_CASE("FormatBin") {
+  std::vector<Range> taintedRanges;
+  SECTION("{0:b}") {
+    REQUIRE("11000000111001" == formatTest("{0:b}", taintedRanges, 12345));
+    REQUIRE(1 == taintedRanges.size());
+    REQUIRE(0 == taintedRanges[0].lowerBound);
+    REQUIRE(13 == taintedRanges[0].upperBound);
+  }
+  SECTION("{0:safe:b}") {
+    REQUIRE("11000000111001" == formatTest("{0:safe:b}", taintedRanges, 12345));
+    REQUIRE(0 == taintedRanges.size());
+  }
+  SECTION("{0:b:safe}") {
+    REQUIRE("11000000111001" == formatTest("{0:b:safe}", taintedRanges, 12345));
+    REQUIRE(0 == taintedRanges.size());
+  }
+}
+
+TEST_CASE("FormatDec") {
+  std::vector<Range> taintedRanges;
+  SECTION("{0}") {
+    REQUIRE("67890" == formatTest("{0}", taintedRanges, 67890));
+    REQUIRE(1 == taintedRanges.size());
+    REQUIRE(0 == taintedRanges[0].lowerBound);
+    REQUIRE(4 == taintedRanges[0].upperBound);
+  }
+  SECTION("{0:safe}") {
+    REQUIRE("67890" == formatTest("{0:safe}", taintedRanges, 67890));
+    REQUIRE(0 == taintedRanges.size());
+  }
+}
+
+TEST_CASE("FormatFloat") {
+  std::vector<Range> taintedRanges;
+  SECTION("{0:f}") {
+    REQUIRE("392.500000" == formatTest("{0:f}", taintedRanges, 392.5f));
+    REQUIRE(1 == taintedRanges.size());
+    REQUIRE(0 == taintedRanges[0].lowerBound);
+    REQUIRE(9 == taintedRanges[0].upperBound);
+  }
+  SECTION("{0:safe:f}") {
+    REQUIRE("392.500000" == formatTest("{0:safe:f}", taintedRanges, 392.5f));
+    REQUIRE(0 == taintedRanges.size());
+  }
+  SECTION("{0:f:safe}") {
+    REQUIRE("392.500000" == formatTest("{0:f:safe}", taintedRanges, 392.5f));
+    REQUIRE(0 == taintedRanges.size());
+  }
+}
+
+TEST_CASE("FormatLongDouble") {
+  std::vector<Range> taintedRanges;
+  SECTION("{0:g}") {
+    REQUIRE("392.65" == formatTest("{0:g}", taintedRanges, 392.65l));
+    REQUIRE(1 == taintedRanges.size());
+    REQUIRE(0 == taintedRanges[0].lowerBound);
+    REQUIRE(5 == taintedRanges[0].upperBound);
   }
 }
 

@@ -22,8 +22,6 @@ public:
     BasicFormatter<char> formatter(fmt::ArgList(fmt::internal::make_type(args...), array), w);
     formatter.format(formatStr);
 
-    auto formattedString = w.str();
-    auto taintedRanges = formatter.get_tainted_ranges();
     return LanguageService::trySanitize<LP>(w.str(), formatter.get_tainted_ranges());
   }
 };

@@ -8,7 +8,6 @@ std::vector<Token> RegexLanguageProvider::tokenize(const std::string &text, size
 
   std::vector<Token> tokens;
 
-  auto mainModeRules = getMainModeRules();
   std::stack<std::vector<RegexRule>> modeRuleStack;
   modeRuleStack.push(getMainModeRules());
 
