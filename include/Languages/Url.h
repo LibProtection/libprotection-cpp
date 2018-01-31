@@ -28,8 +28,6 @@ class Url final : public RegexLanguageProvider {
   friend Single<Url>;
 
 public:
-  std::vector<Token> tokenize(const std::string &text, size_t offset = 0) const override;
-
   std::pair<std::string, bool> trySanitize(const std::string &text, Token context) const override;
 
   std::string tokenTypeToString(TokenType type) const override;
@@ -44,9 +42,6 @@ private:
   TokenType getErrorTokenType() const override;
 
   Token createToken(TokenType type, size_t lowerBound, size_t upperBound, const std::string &text) const override;
-
-  std::vector<Token> splitToken(const std::string &text, size_t lowerBound, const std::string &splitChars,
-                                TokenType type) const;
 
   std::pair<std::string, bool> tryUrlEncode(const std::string &text, TokenType tokenType) const;
 };

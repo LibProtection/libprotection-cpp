@@ -1,0 +1,6 @@
+addTest("Protection:Tokenization:FilePath" filepath OBJECT_LIBS ${catch} LIBS protection)
+addTest("Protection:Tokenization:Url" url OBJECT_LIBS ${catch} LIBS protection)
+addTest("Protection:Tokenization:Sql" sql OBJECT_LIBS ${catch} LIBS protection)
+addTest("Protection:Tokenization:Html" html OBJECT_LIBS ${catch} LIBS protection)
+addTest("Protection:Tokenization:JavaScript" javascript OBJECT_LIBS ${catch} LIBS protection)
+addTest("Protection:Tokenization" tokenization OBJECT_LIBS ${catch} LIBS protection)

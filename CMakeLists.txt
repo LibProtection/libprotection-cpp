@@ -10,9 +10,9 @@ endif()
 string(TOUPPER "${CMAKE_BUILD_TYPE}" uppercase_CMAKE_BUILD_TYPE)
 
 if(uppercase_CMAKE_BUILD_TYPE STREQUAL "DEBUG")
-  add_definitions(-fsanitize=address -fno-omit-frame-pointer)
-  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGE} -fsanitize=address -fno-omit-frame-pointer")
-  set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGE} -fsanitize=address -fno-omit-frame-pointer")
+  #add_definitions(-fsanitize=address -fno-omit-frame-pointer)
+  #set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGE} -fsanitize=address -fno-omit-frame-pointer")
+  #set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGE} -fsanitize=address -fno-omit-frame-pointer")
 endif()
 
 set(ANTLR4CPP_GRAMMAR_PATH "${PROJECT_SOURCE_DIR}/submodules/libprotection-common/grammars")

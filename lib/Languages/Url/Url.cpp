@@ -39,52 +39,6 @@ const std::vector<RegexRule> &Url::getMainModeRules() const {
   return mainModeRules;
 }
 
-std::vector<Token> Url::tokenize(const std::string &text, size_t offset) const {
-  std::vector<Token> tokens;
-  for (const auto &token : RegexLanguageProvider::tokenize(text, offset)) {
-    auto tokenText = token.text;
-    auto lowerBound = token.range.lowerBound;
-
-    switch (static_cast<UrlTokenType>(token.tokenType)) {
-    case UrlTokenType::SchemeCtx:
-      for (const auto &subToken : splitToken(tokenText, lowerBound, ":", TOKEN_TYPE(UrlTokenType::Scheme))) {
-        tokens.push_back(subToken);
-      }
-      break;
-
-    case UrlTokenType::AuthorityCtx:
-      for (const auto &subToken :
-           splitToken(tokenText, lowerBound, "\\/:@", TOKEN_TYPE(UrlTokenType::AuthorityEntry))) {
-        tokens.push_back(subToken);
-      }
-      break;
-
-    case UrlTokenType::PathCtx:
-      for (const auto &subToken : splitToken(tokenText, lowerBound, "\\/", TOKEN_TYPE(UrlTokenType::PathEntry))) {
-        tokens.push_back(subToken);
-      }
-      break;
-
-    case UrlTokenType::QueryCtx:
-      for (const auto &subToken : splitToken(tokenText, lowerBound, "?&=", TOKEN_TYPE(UrlTokenType::QueryEntry))) {
-        tokens.push_back(subToken);
-      }
-      break;
-
-    case UrlTokenType::FragmentCtx:
-      for (const auto &subToken : splitToken(tokenText, lowerBound, "#", TOKEN_TYPE(UrlTokenType::Fragment))) {
-        tokens.push_back(subToken);
-      }
-      break;
-
-    default:
-      tokens.push_back(token);
-      break;
-    }
-  }
-  return {};
-}
-
 Token Url::createToken(TokenType type, size_t lowerBound, size_t upperBound, const std::string &text) const {
   return Token(this, type, lowerBound, upperBound, text, isTrivial(type, text));
 }
@@ -116,39 +70,6 @@ bool Url::isTrivial(TokenType type, const std::string &text) const {
 }
 
 TokenType Url::getErrorTokenType() const { return TOKEN_TYPE(UrlTokenType::Error); }
-
-std::vector<Token> Url::splitToken(const std::string &text, size_t lowerBound, const std::string &splitChars,
-                                   TokenType tokenType) const {
-  if (text.empty()) {
-    return {};
-  }
-
-  std::vector<Token> tokens;
-  std::string lastTokenText;
-
-  for (const auto &ch : text) {
-    if (splitChars.find(ch) != std::string::npos) {
-      if (!lastTokenText.empty()) {
-        auto upperBound = lowerBound + lastTokenText.length() - 1;
-        tokens.push_back(createToken(tokenType, lowerBound, upperBound, lastTokenText));
-        lowerBound = upperBound + 1;
-        lastTokenText.clear();
-      }
-
-      tokens.push_back(createToken(TOKEN_TYPE(UrlTokenType::Separator), lowerBound, lowerBound, std::string{ch}));
-      ++lowerBound;
-
-    } else {
-      lastTokenText.push_back(ch);
-    }
-  }
-
-  if (!lastTokenText.empty()) {
-    tokens.push_back(createToken(tokenType, lowerBound, lowerBound + lastTokenText.length() - 1, lastTokenText));
-  }
-
-  return tokens;
-}
 
 std::pair<std::string, bool> Url::tryUrlEncode(const std::string &text, TokenType tokenType) const {
   std::string encodedText;

@@ -57,17 +57,17 @@ std::vector<Token> Html::tokenize(const std::string &text, size_t offset) const 
         break;
 
       default:
-        auto ignoreCaseCompare = [](unsigned char a, unsigned char b) { return (std::toupper(a) < std::toupper(b)); };
+        auto ignoreCaseEqual = [](unsigned char a, unsigned char b) { return (std::toupper(a) == std::toupper(b)); };
 
         state = HtmlTokenizerState::Insignificant;
         switch (htmlTokenType) {
         case HtmlTokenType::AttributeName: {
 
-          auto startsWithIgnoreCase = [&ignoreCaseCompare](const std::string &text, const std::string &substr) {
+          auto startsWithIgnoreCase = [&ignoreCaseEqual](const std::string &text, const std::string &substr) {
             if (text.length() < substr.length())
               return false;
 
-            return std::equal(text.begin(), text.begin() + substr.length(), substr.begin(), ignoreCaseCompare);
+            return std::equal(substr.begin(), substr.end(), text.begin(), ignoreCaseEqual);
           };
 
           if (startsWithIgnoreCase(token.text, "on")) {
@@ -78,10 +78,10 @@ std::vector<Token> Html::tokenize(const std::string &text, size_t offset) const 
         } break;
 
         case HtmlTokenType::TagOpen:
-          if (std::equal(token.text.begin(), token.text.end(), std::string{"<script"}.begin(), ignoreCaseCompare)) {
+          if (std::equal(token.text.begin(), token.text.end(), std::string{"<script"}.begin(), ignoreCaseEqual)) {
             insideScriptTag = true;
           } else if (std::equal(token.text.begin(), token.text.end(), std::string{"</script"}.begin(),
-                                ignoreCaseCompare)) {
+                                ignoreCaseEqual)) {
             insideScriptTag = false;
           }
           break;
