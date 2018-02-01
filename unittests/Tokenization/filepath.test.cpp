@@ -4,9 +4,7 @@
 
 using namespace protection::injections;
 
-template <typename T, size_t N> std::string ConstructStr(T (&arr)[N]) {
-  return std::string{arr, N - 1};
-}
+template <typename T, size_t N> std::string ConstructStr(T (&arr)[N]) { return std::string{arr, N - 1}; }
 
 TEST_CASE("FilePath") {
   SECTION("general") {

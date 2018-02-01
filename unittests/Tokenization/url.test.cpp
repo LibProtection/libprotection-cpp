@@ -18,7 +18,7 @@ TEST_CASE("Url") {
 
     REQUIRE(":" == tokens[1].text);
     REQUIRE(5 == tokens[1].range.lowerBound);
-    REQUIRE(5== tokens[1].range.upperBound);
+    REQUIRE(5 == tokens[1].range.upperBound);
     REQUIRE(TOKEN_TYPE(UrlTokenType::Separator) == tokens[1].tokenType);
 
     REQUIRE("//" == tokens[2].text);

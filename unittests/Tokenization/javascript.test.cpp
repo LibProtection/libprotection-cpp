@@ -99,7 +99,7 @@ TEST_CASE("JavaScript") {
 
     REQUIRE("\n" == tokens[16].text);
     REQUIRE(20 == tokens[16].range.lowerBound);
-    REQUIRE(20== tokens[16].range.upperBound);
+    REQUIRE(20 == tokens[16].range.upperBound);
     REQUIRE(TOKEN_TYPE(JavaScriptTokenType::LineTerminator) == tokens[16].tokenType);
 
     REQUIRE("\n" == tokens[17].text);
@@ -129,7 +129,7 @@ TEST_CASE("JavaScript") {
 
     REQUIRE(" " == tokens[22].text);
     REQUIRE(27 == tokens[22].range.lowerBound);
-    REQUIRE(27== tokens[22].range.upperBound);
+    REQUIRE(27 == tokens[22].range.upperBound);
     REQUIRE(TOKEN_TYPE(JavaScriptTokenType::WhiteSpaces) == tokens[22].tokenType);
 
     REQUIRE("<" == tokens[23].text);
@@ -138,7 +138,7 @@ TEST_CASE("JavaScript") {
     REQUIRE(TOKEN_TYPE(JavaScriptTokenType::LessThan) == tokens[23].tokenType);
 
     REQUIRE(" " == tokens[24].text);
-    REQUIRE(29== tokens[24].range.lowerBound);
+    REQUIRE(29 == tokens[24].range.lowerBound);
     REQUIRE(29 == tokens[24].range.upperBound);
     REQUIRE(TOKEN_TYPE(JavaScriptTokenType::WhiteSpaces) == tokens[24].tokenType);
 
@@ -149,7 +149,7 @@ TEST_CASE("JavaScript") {
 
     REQUIRE(")" == tokens[26].text);
     REQUIRE(31 == tokens[26].range.lowerBound);
-    REQUIRE(31== tokens[26].range.upperBound);
+    REQUIRE(31 == tokens[26].range.upperBound);
     REQUIRE(TOKEN_TYPE(JavaScriptTokenType::CloseParen) == tokens[26].tokenType);
 
     REQUIRE("\n" == tokens[27].text);
@@ -179,7 +179,7 @@ TEST_CASE("JavaScript") {
 
     REQUIRE("(" == tokens[32].text);
     REQUIRE(48 == tokens[32].range.lowerBound);
-    REQUIRE(48== tokens[32].range.upperBound);
+    REQUIRE(48 == tokens[32].range.upperBound);
     REQUIRE(TOKEN_TYPE(JavaScriptTokenType::OpenParen) == tokens[32].tokenType);
 
     REQUIRE("a" == tokens[33].text);
@@ -188,7 +188,7 @@ TEST_CASE("JavaScript") {
     REQUIRE(TOKEN_TYPE(JavaScriptTokenType::Identifier) == tokens[33].tokenType);
 
     REQUIRE(")" == tokens[34].text);
-    REQUIRE(50== tokens[34].range.lowerBound);
+    REQUIRE(50 == tokens[34].range.lowerBound);
     REQUIRE(50 == tokens[34].range.upperBound);
     REQUIRE(TOKEN_TYPE(JavaScriptTokenType::CloseParen) == tokens[34].tokenType);
 
@@ -199,7 +199,7 @@ TEST_CASE("JavaScript") {
 
     REQUIRE("\n" == tokens[36].text);
     REQUIRE(52 == tokens[36].range.lowerBound);
-    REQUIRE(52== tokens[36].range.upperBound);
+    REQUIRE(52 == tokens[36].range.upperBound);
     REQUIRE(TOKEN_TYPE(JavaScriptTokenType::LineTerminator) == tokens[36].tokenType);
 
     REQUIRE("}" == tokens[37].text);
