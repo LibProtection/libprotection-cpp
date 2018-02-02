@@ -289,7 +289,7 @@ TEST_CASE("Html") {
     REQUIRE(TOKEN_TYPE(HtmlTokenType::TagClose) == tokens[53].tokenType);
   }
 
-  SECTION("general") {
+  SECTION("general1") {
     std::string text{"<a href='Default.aspx' onclick='alert(\"Hello from embedded JavaScript code!\");"
                      "return false'>This site's home page</a>"};
     auto tokens = Single<Html>::instance().tokenize(text);
@@ -385,5 +385,167 @@ TEST_CASE("Html") {
     REQUIRE(116 == tokens[17].range.lowerBound);
     REQUIRE(116 == tokens[17].range.upperBound);
     REQUIRE(TOKEN_TYPE(HtmlTokenType::TagClose) == tokens[17].tokenType);
+  }
+
+  SECTION("unclosed-quotes") {
+    std::string text{"<div class='class1-name>text</div>\n"
+                     "<div class=\"class2-name>text</div>"};
+
+    auto tokens = Single<Html>::instance().tokenize(text);
+
+    REQUIRE(19 == tokens.size());
+
+    REQUIRE("<div" == tokens[0].text);
+    REQUIRE(0 == tokens[0].range.lowerBound);
+    REQUIRE(3 == tokens[0].range.upperBound);
+    REQUIRE(TOKEN_TYPE(HtmlTokenType::TagOpen) == tokens[0].tokenType);
+
+    REQUIRE("class" == tokens[1].text);
+    REQUIRE(5 == tokens[1].range.lowerBound);
+    REQUIRE(9 == tokens[1].range.upperBound);
+    REQUIRE(TOKEN_TYPE(HtmlTokenType::AttributeName) == tokens[1].tokenType);
+
+    REQUIRE("=" == tokens[2].text);
+    REQUIRE(10 == tokens[2].range.lowerBound);
+    REQUIRE(10 == tokens[2].range.upperBound);
+    REQUIRE(TOKEN_TYPE(HtmlTokenType::TagEquals) == tokens[2].tokenType);
+
+    REQUIRE("'" == tokens[3].text);
+    REQUIRE(11 == tokens[3].range.lowerBound);
+    REQUIRE(11 == tokens[3].range.upperBound);
+    REQUIRE(TOKEN_TYPE(HtmlTokenType::ErrorAttribute) == tokens[3].tokenType);
+
+    REQUIRE("class1-name" == tokens[4].text);
+    REQUIRE(12 == tokens[4].range.lowerBound);
+    REQUIRE(22 == tokens[4].range.upperBound);
+    REQUIRE(TOKEN_TYPE(HtmlTokenType::AttributeValue) == tokens[4].tokenType);
+
+    REQUIRE(">" == tokens[5].text);
+    REQUIRE(23 == tokens[5].range.lowerBound);
+    REQUIRE(23 == tokens[5].range.upperBound);
+    REQUIRE(TOKEN_TYPE(HtmlTokenType::TagClose) == tokens[5].tokenType);
+
+    REQUIRE("text" == tokens[6].text);
+    REQUIRE(24 == tokens[6].range.lowerBound);
+    REQUIRE(27 == tokens[6].range.upperBound);
+    REQUIRE(TOKEN_TYPE(HtmlTokenType::HtmlText) == tokens[6].tokenType);
+
+    REQUIRE("</div" == tokens[7].text);
+    REQUIRE(28 == tokens[7].range.lowerBound);
+    REQUIRE(32 == tokens[7].range.upperBound);
+    REQUIRE(TOKEN_TYPE(HtmlTokenType::TagOpen) == tokens[7].tokenType);
+
+    REQUIRE(">" == tokens[8].text);
+    REQUIRE(33 == tokens[8].range.lowerBound);
+    REQUIRE(33 == tokens[8].range.upperBound);
+    REQUIRE(TOKEN_TYPE(HtmlTokenType::TagClose) == tokens[8].tokenType);
+
+    REQUIRE("\n" == tokens[9].text);
+    REQUIRE(34 == tokens[9].range.lowerBound);
+    REQUIRE(34 == tokens[9].range.upperBound);
+    REQUIRE(TOKEN_TYPE(HtmlTokenType::HtmlText) == tokens[9].tokenType);
+
+    REQUIRE("<div" == tokens[10].text);
+    REQUIRE(35 == tokens[10].range.lowerBound);
+    REQUIRE(38 == tokens[10].range.upperBound);
+    REQUIRE(TOKEN_TYPE(HtmlTokenType::TagOpen) == tokens[10].tokenType);
+
+    REQUIRE("class" == tokens[11].text);
+    REQUIRE(40 == tokens[11].range.lowerBound);
+    REQUIRE(44 == tokens[11].range.upperBound);
+    REQUIRE(TOKEN_TYPE(HtmlTokenType::AttributeName) == tokens[11].tokenType);
+
+    REQUIRE("=" == tokens[12].text);
+    REQUIRE(45 == tokens[12].range.lowerBound);
+    REQUIRE(45 == tokens[12].range.upperBound);
+    REQUIRE(TOKEN_TYPE(HtmlTokenType::TagEquals) == tokens[12].tokenType);
+
+    REQUIRE("\"" == tokens[13].text);
+    REQUIRE(46 == tokens[13].range.lowerBound);
+    REQUIRE(46 == tokens[13].range.upperBound);
+    REQUIRE(TOKEN_TYPE(HtmlTokenType::ErrorAttribute) == tokens[13].tokenType);
+
+    REQUIRE("class2-name" == tokens[14].text);
+    REQUIRE(47 == tokens[14].range.lowerBound);
+    REQUIRE(57 == tokens[14].range.upperBound);
+    REQUIRE(TOKEN_TYPE(HtmlTokenType::AttributeValue) == tokens[14].tokenType);
+
+    REQUIRE(">" == tokens[15].text);
+    REQUIRE(58 == tokens[15].range.lowerBound);
+    REQUIRE(58 == tokens[15].range.upperBound);
+    REQUIRE(TOKEN_TYPE(HtmlTokenType::TagClose) == tokens[15].tokenType);
+
+    REQUIRE("text" == tokens[16].text);
+    REQUIRE(59 == tokens[16].range.lowerBound);
+    REQUIRE(62 == tokens[16].range.upperBound);
+    REQUIRE(TOKEN_TYPE(HtmlTokenType::HtmlText) == tokens[16].tokenType);
+
+    REQUIRE("</div" == tokens[17].text);
+    REQUIRE(63 == tokens[17].range.lowerBound);
+    REQUIRE(67 == tokens[17].range.upperBound);
+    REQUIRE(TOKEN_TYPE(HtmlTokenType::TagOpen) == tokens[17].tokenType);
+
+    REQUIRE(">" == tokens[18].text);
+    REQUIRE(68 == tokens[18].range.lowerBound);
+    REQUIRE(68 == tokens[18].range.upperBound);
+    REQUIRE(TOKEN_TYPE(HtmlTokenType::TagClose) == tokens[18].tokenType);
+  }
+
+  SECTION("unclosed-tag") {
+    std::string text{R"(<div class="class-name1" <div class="class-name2">)"};
+
+    auto tokens = Single<Html>::instance().tokenize(text);
+
+    REQUIRE(10 == tokens.size());
+
+    REQUIRE("<div" == tokens[0].text);
+    REQUIRE(0 == tokens[0].range.lowerBound);
+    REQUIRE(3 == tokens[0].range.upperBound);
+    REQUIRE(TOKEN_TYPE(HtmlTokenType::TagOpen) == tokens[0].tokenType);
+
+    REQUIRE("class" == tokens[1].text);
+    REQUIRE(5 == tokens[1].range.lowerBound);
+    REQUIRE(9 == tokens[1].range.upperBound);
+    REQUIRE(TOKEN_TYPE(HtmlTokenType::AttributeName) == tokens[1].tokenType);
+
+    REQUIRE("=" == tokens[2].text);
+    REQUIRE(10 == tokens[2].range.lowerBound);
+    REQUIRE(10 == tokens[2].range.upperBound);
+    REQUIRE(TOKEN_TYPE(HtmlTokenType::TagEquals) == tokens[2].tokenType);
+
+    REQUIRE("\"class-name1\"" == tokens[3].text);
+    REQUIRE(11 == tokens[3].range.lowerBound);
+    REQUIRE(23 == tokens[3].range.upperBound);
+    REQUIRE(TOKEN_TYPE(HtmlTokenType::AttributeValue) == tokens[3].tokenType);
+
+    REQUIRE("<" == tokens[4].text);
+    REQUIRE(25 == tokens[4].range.lowerBound);
+    REQUIRE(25 == tokens[4].range.upperBound);
+    REQUIRE(TOKEN_TYPE(HtmlTokenType::ErrorTag) == tokens[4].tokenType);
+
+    REQUIRE("div" == tokens[5].text);
+    REQUIRE(26 == tokens[5].range.lowerBound);
+    REQUIRE(28 == tokens[5].range.upperBound);
+    REQUIRE(TOKEN_TYPE(HtmlTokenType::AttributeName) == tokens[5].tokenType);
+
+    REQUIRE("class" == tokens[6].text);
+    REQUIRE(30 == tokens[6].range.lowerBound);
+    REQUIRE(34 == tokens[6].range.upperBound);
+    REQUIRE(TOKEN_TYPE(HtmlTokenType::AttributeName) == tokens[6].tokenType);
+
+    REQUIRE("=" == tokens[7].text);
+    REQUIRE(35 == tokens[7].range.lowerBound);
+    REQUIRE(35 == tokens[7].range.upperBound);
+    REQUIRE(TOKEN_TYPE(HtmlTokenType::TagEquals) == tokens[7].tokenType);
+
+    REQUIRE("\"class-name2\"" == tokens[8].text);
+    REQUIRE(36 == tokens[8].range.lowerBound);
+    REQUIRE(48 == tokens[8].range.upperBound);
+    REQUIRE(TOKEN_TYPE(HtmlTokenType::AttributeValue) == tokens[8].tokenType);
+
+    REQUIRE(">" == tokens[9].text);
+    REQUIRE(49 == tokens[9].range.lowerBound);
+    REQUIRE(49 == tokens[9].range.upperBound);
+    REQUIRE(TOKEN_TYPE(HtmlTokenType::TagClose) == tokens[9].tokenType);
   }
 }
