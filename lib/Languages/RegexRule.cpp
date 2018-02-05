@@ -1,4 +1,4 @@
-#include "RegexRule.h"
+#include "protection/RegexRule.h"
 
 namespace protection {
 namespace injections {

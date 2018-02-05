@@ -1,7 +1,7 @@
 #ifndef PROTECTION_ANTLRLANGUAGEPROVIDER_H
 #define PROTECTION_ANTLRLANGUAGEPROVIDER_H
 
-#include "LanguageProvider.h"
+#include "protection/LanguageProvider.h"
 #include "antlr4-runtime.h"
 
 #include <memory>

@@ -1,7 +1,7 @@
 #ifndef PROTECTION_SAFESTRING_H
 #define PROTECTION_SAFESTRING_H
 
-#include <Formatter.h>
+#include "protection/Formatter.h"
 
 #include <string>
 #include <iostream>

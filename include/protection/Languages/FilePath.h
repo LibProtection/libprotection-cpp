@@ -1,12 +1,12 @@
 #ifndef PROTECTION_FILEPATH_H
 #define PROTECTION_FILEPATH_H
 
+#include "protection/Token.h"
+#include "protection/RegexLanguageProvider.h"
+#include "protection/Single.h"
+
 #include <string>
 #include <vector>
-
-#include "Token.h"
-#include "RegexLanguageProvider.h"
-#include "Single.h"
 
 namespace protection {
 namespace injections {

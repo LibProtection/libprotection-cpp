@@ -1,9 +1,9 @@
 #ifndef PROTECTION_LANGUAGESERVICE_H
 #define PROTECTION_LANGUAGESERVICE_H
 
-#include <LanguageProvider.h>
-#include <Range.h>
-#include <Single.h>
+#include "protection/LanguageProvider.h"
+#include "protection/Range.h"
+#include "protection/Single.h"
 
 #include <string>
 #include <unordered_map>

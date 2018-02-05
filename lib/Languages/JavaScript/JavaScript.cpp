@@ -1,6 +1,6 @@
-#include "Languages/JavaScript.h"
+#include "protection/Languages/JavaScript.h"
 #include "JavaScriptCppLexer.h"
-#include "Support/WebUtils.h"
+#include "support/WebUtils.h"
 
 namespace protection {
 namespace injections {

@@ -1,7 +1,7 @@
 #ifndef PROTECTION_REGEXRULE_H
 #define PROTECTION_REGEXRULE_H
 
-#include "Token.h"
+#include "protection/Token.h"
 
 #include <regex>
 #include <string>

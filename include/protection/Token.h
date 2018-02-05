@@ -1,8 +1,8 @@
 #ifndef PROTECTION_TOKEN_H
 #define PROTECTION_TOKEN_H
 
-#include "LanguageProvider.h"
-#include "Range.h"
+#include "protection/LanguageProvider.h"
+#include "protection/Range.h"
 
 #include <memory>
 #include <string>

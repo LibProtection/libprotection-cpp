@@ -1,8 +1,8 @@
 #ifndef PROTECTION_URL_H
 #define PROTECTION_URL_H
 
-#include "RegexLanguageProvider.h"
-#include "Single.h"
+#include "protection/RegexLanguageProvider.h"
+#include "protection/Single.h"
 
 namespace protection {
 namespace injections {

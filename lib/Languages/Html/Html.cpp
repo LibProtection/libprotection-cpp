@@ -1,8 +1,8 @@
-#include "Languages/Html.h"
-#include "Languages/JavaScript.h"
-#include "Languages/Url.h"
+#include "protection/Languages/Html.h"
+#include "protection/Languages/JavaScript.h"
+#include "protection/Languages/Url.h"
 #include "HTMLLexer.h"
-#include "Support/WebUtils.h"
+#include "support/WebUtils.h"
 
 namespace protection {
 namespace injections {

@@ -1,4 +1,4 @@
-#include "AntlrLanguageProvider.h"
+#include "protection/AntlrLanguageProvider.h"
 
 namespace protection {
 namespace injections {

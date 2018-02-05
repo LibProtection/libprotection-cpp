@@ -1,5 +1,5 @@
-#include <LanguageProvider.h>
-#include "Token.h"
+#include "protection/LanguageProvider.h"
+#include "protection/Token.h"
 
 namespace protection {
 namespace injections {

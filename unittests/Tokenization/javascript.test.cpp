@@ -1,6 +1,6 @@
 #include <catch/single_include/catch.hpp>
-#include <Single.h>
-#include <Languages.h>
+#include "protection/Single.h"
+#include "protection/Languages.h"
 
 using namespace protection::injections;
 

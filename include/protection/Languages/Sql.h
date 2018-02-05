@@ -1,8 +1,8 @@
 #ifndef PROTECTION_SQL_H
 #define PROTECTION_SQL_H
 
-#include "AntlrLanguageProvider.h"
-#include "Token.h"
+#include "protection/AntlrLanguageProvider.h"
+#include "protection/Token.h"
 
 namespace protection {
 namespace injections {

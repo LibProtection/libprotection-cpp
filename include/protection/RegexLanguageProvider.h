@@ -1,8 +1,8 @@
 #ifndef PROTECTION_REGEXLANGUAGEPROVIDER_H
 #define PROTECTION_REGEXLANGUAGEPROVIDER_H
 
-#include "LanguageProvider.h"
-#include "RegexRule.h"
+#include "protection/LanguageProvider.h"
+#include "protection/RegexRule.h"
 
 namespace protection {
 namespace injections {

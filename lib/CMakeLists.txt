@@ -6,6 +6,7 @@ add_subdirectory(Languages)
 add_library(${PROJECT_NAME} SHARED
         Range.cpp
         LanguageService.cpp
+        LibProtectionEngine.cpp
         Languages/RegexLanguageProvider.cpp
         Languages/Token.cpp
         Languages/AntrlLanguageProvider.cpp
@@ -13,3 +14,5 @@ add_library(${PROJECT_NAME} SHARED
 
 target_link_libraries(${PROJECT_NAME} PUBLIC FilePath Url Sql Html JavaScript antlr4-runtime)
 target_link_libraries(${PROJECT_NAME} PUBLIC fmt::fmt-header-only)
+
+install(TARGETS ${PROJECT_NAME} LIBRARY DESTINATION lib)

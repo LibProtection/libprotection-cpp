@@ -1,6 +1,6 @@
 find_package(Java COMPONENTS Runtime REQUIRED)
 
-set(ANTLR4CPP_ROOT ${PROJECT_SOURCE_DIR}/submodules/antlr4cpp)
+set(ANTLR4CPP_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/submodules/antlr4cpp)
 set(ANTLR4CPP_SRC_DIR ${ANTLR4CPP_ROOT}/runtime/Cpp)
 
 # default path for source files
@@ -16,6 +16,7 @@ endforeach(src_path)
 file(GLOB_RECURSE ANTLR4CPP_SOURCES "${ANTLR4CPP_SRC_DIR}/runtime/src/*.cpp")
 
 add_library(antlr4-runtime SHARED ${ANTLR4CPP_SOURCES})
+install(TARGETS antlr4-runtime LIBRARY DESTINATION lib)
 
 # macro for lexers generation
 macro(antlr4cpp_process_grammar

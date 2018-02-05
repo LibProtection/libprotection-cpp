@@ -1,9 +1,9 @@
 #ifndef PROTECTION_FORMATTER_H
 #define PROTECTION_FORMATTER_H
 
-#include <Single.h>
-#include <LanguageService.h>
-#include <Support/Format.h>
+#include "protection/Single.h"
+#include "protection/LanguageService.h"
+#include "support/Format.h"
 
 #include <string>
 
