@@ -30,7 +30,7 @@ message(STATUS "Found antlr4cpp libs: ${ANTLR4CPP_LIBS} and includes: ${ANTLR4CP
 set(FMT_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/submodules/fmt)
 add_subdirectory(${FMT_ROOT} EXCLUDE_FROM_ALL)
 
-add_definitions(-Wall -std=c++11 -fPIC -Wno-attributes)
+add_definitions(-Wall -Werror -std=c++11 -fPIC -Wno-attributes)
 
 include_directories(${PROTECTION_INCLUDE_DIR})
 include_directories(${SUBMODULES_DIR})
