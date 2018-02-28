@@ -15,7 +15,7 @@ struct Html::IslandDto {
 
 const std::set<std::string> Html::htmlUrlAttributes = {"href",     "src",        "manifest",   "poster",   "code",
                                                        "codebase", "data",       "xlink:href", "xml:base", "from",
-                                                       "to",       "formaction", "action"};
+                                                       "to",       "formaction", "action",     "dynsrc",   "lowsrc"};
 
 TokenType Html::convertAntlrTokenType(size_t antlrTokenType) const { return antlrTokenType; }
 
