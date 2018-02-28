@@ -177,21 +177,23 @@ const Char *BasicFormatter<Char, ArgFormatter>::format(const Char *&format_str, 
     ++s;
 
     std::vector<char> buffer;
-    const Char *p = s;
-    Char c = *p;
-    while (p) {
-      if (c == ':' || c == '}') {
+    const Char *t = s;
+    Char cs = *t;
+    while (*t) {
+      if (cs == ':' || cs == '}') {
         break;
       }
-      buffer.push_back(c);
-      c = *(++p);
+      buffer.push_back(cs);
+      cs = *(++t);
     }
-    auto str = std::string(&buffer[0], buffer.size());
-    if (std::find(formats.begin(), formats.end(), str) != formats.end()) {
-      safe = true;
-      s += str.length();
-      if (c == ':') {
-        ++s;
+    if (!buffer.empty()) {
+      auto str = std::string(buffer.begin(), buffer.end());
+      if (std::find(formats.begin(), formats.end(), str) != formats.end()) {
+        safe = true;
+        s += str.length();
+        if (cs == ':') {
+          ++s;
+        }
       }
     }
 
@@ -348,21 +350,23 @@ const Char *BasicFormatter<Char, ArgFormatter>::format(const Char *&format_str, 
     if (*s == ':') {
       ++s;
       std::vector<char> buffer;
-      const Char *p = s;
-      Char c = *p;
-      while (p) {
-        if (c == '}') {
+      t = s;
+      cs = *t;
+      while (*t) {
+        if (cs == '}') {
           break;
         }
-        buffer.push_back(c);
-        c = *(++p);
+        buffer.push_back(cs);
+        cs = *(++t);
       }
-      auto str = std::string(&buffer[0], buffer.size());
-      if (std::find(formats.begin(), formats.end(), str) != formats.end() && !safe) {
-        safe = true;
-        s += str.length();
-      } else {
-        FMT_THROW(fmt::FormatError("missing '}' in format string"));
+      if (!buffer.empty()) {
+        auto str = std::string(buffer.begin(), buffer.end());
+        if (std::find(formats.begin(), formats.end(), str) != formats.end() && !safe) {
+          safe = true;
+          s += str.length();
+        } else {
+          FMT_THROW(fmt::FormatError("missing '}' in format string"));
+        }
       }
     }
   }
