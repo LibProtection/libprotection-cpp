@@ -4,6 +4,8 @@
 #include "HTMLLexer.h"
 #include "support/WebUtils.h"
 
+#include <cctype>
+
 namespace protection {
 namespace injections {
 

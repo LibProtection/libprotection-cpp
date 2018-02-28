@@ -1,5 +1,7 @@
 #include "protection/RegexLanguageProvider.h"
 
+#include <stack>
+
 namespace protection {
 namespace injections {
 

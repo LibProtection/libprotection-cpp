@@ -2,6 +2,7 @@
 #include "support/WebUtils.h"
 
 #include <numeric>
+#include <map>
 
 namespace protection {
 namespace injections {

@@ -1,5 +1,7 @@
 #include "protection/Languages/FilePath.h"
 
+#include <map>
+
 namespace protection {
 namespace injections {
 

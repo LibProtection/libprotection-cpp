@@ -10,7 +10,7 @@
 namespace protection {
 namespace injections {
 
-class Token;
+struct Token;
 
 using TokenType = size_t;
 #define TOKEN_TYPE(type) static_cast<TokenType>(type)

@@ -7,6 +7,7 @@
 #include <map>
 #include <iostream>
 #include <iomanip>
+#include <cctype>
 
 #define HIGH_SURROGATE_START 0xD800
 #define HIGH_SURROGATE_END 0xDBFF
