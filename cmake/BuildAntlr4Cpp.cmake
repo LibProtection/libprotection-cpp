@@ -18,7 +18,7 @@ file(GLOB_RECURSE ANTLR4CPP_SOURCES "${ANTLR4CPP_SRC_DIR}/runtime/src/*.cpp")
 add_library(antlr4_shared SHARED ${ANTLR4CPP_SOURCES})
 add_library(antlr4_static STATIC ${ANTLR4CPP_SOURCES})
 
-install(TARGETS antlr4_shared RUNTIME DESTINATION lib)
+install(TARGETS antlr4_shared DESTINATION lib)
 install(TARGETS antlr4_static ARCHIVE DESTINATION lib)
 
 set(static_lib_suffix "")
