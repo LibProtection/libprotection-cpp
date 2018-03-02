@@ -12,7 +12,7 @@
 namespace protection {
 namespace injections {
 
-class LanguageService {
+class LIBPRROTECTION_EXPORT LanguageService {
 public:
   template <typename LP>
   static std::pair<std::string, bool> trySanitize(const std::string &text, const std::vector<Range> &taintedRanges) {
@@ -69,7 +69,7 @@ public:
   }
 
 private:
-  struct TokenScope {
+  struct LIBPRROTECTION_EXPORT TokenScope {
     Range range;
     std::vector<Token> tokens;
 

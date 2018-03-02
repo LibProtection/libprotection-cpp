@@ -21,7 +21,7 @@ public:
 
   virtual std::vector<Token> tokenize(const std::string &text, size_t offset = 0) const = 0;
 
-  virtual std::pair<std::string, bool> trySanitize(const std::string &text, Token context) const = 0;
+  virtual std::pair<std::string, bool> trySanitize(const std::string &text, const Token &context) const = 0;
 
   virtual std::string tokenTypeToString(TokenType type) const = 0;
 

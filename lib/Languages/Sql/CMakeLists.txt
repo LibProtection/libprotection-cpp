@@ -1,4 +1,4 @@
-project(Sql)
+project(SqlLanguageProvider)
 
 set(namespace sql)
 set(grammar_lexer SQLLexer)

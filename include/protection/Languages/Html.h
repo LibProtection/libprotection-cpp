@@ -49,7 +49,7 @@ class Html final : public AntlrLanguageProvider {
 public:
   std::vector<Token> tokenize(const std::string &text, size_t offset = 0) const override;
 
-  std::pair<std::string, bool> trySanitize(const std::string &text, Token context) const override;
+  std::pair<std::string, bool> trySanitize(const std::string &text, const Token &context) const override;
 
   std::string tokenTypeToString(TokenType type) const override;
 

@@ -4,7 +4,7 @@ set(ANTLR4CPP_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/submodules/antlr4cpp)
 set(ANTLR4CPP_SRC_DIR ${ANTLR4CPP_ROOT}/runtime/Cpp)
 
 # default path for source files
-if (NOT ANTLR4CPP_GENERATED_SRC_DIR)
+if(NOT ANTLR4CPP_GENERATED_SRC_DIR)
   set(ANTLR4CPP_GENERATED_SRC_DIR ${CMAKE_BINARY_DIR}/antlr4cpp_generated_src)
 endif()
 
@@ -15,8 +15,24 @@ endforeach(src_path)
 
 file(GLOB_RECURSE ANTLR4CPP_SOURCES "${ANTLR4CPP_SRC_DIR}/runtime/src/*.cpp")
 
-add_library(antlr4-runtime SHARED ${ANTLR4CPP_SOURCES})
-install(TARGETS antlr4-runtime LIBRARY DESTINATION lib)
+add_library(antlr4_shared SHARED ${ANTLR4CPP_SOURCES})
+add_library(antlr4_static STATIC ${ANTLR4CPP_SOURCES})
+
+install(TARGETS antlr4_shared RUNTIME DESTINATION lib)
+install(TARGETS antlr4_static ARCHIVE DESTINATION lib)
+
+set(static_lib_suffix "")
+if(MSVC)
+  set(static_lib_suffix "-static")
+endif()
+
+set_target_properties(antlr4_shared
+                      PROPERTIES
+                      OUTPUT_NAME antlr4-runtime)
+
+set_target_properties(antlr4_static
+                      PROPERTIES
+                      OUTPUT_NAME "antlr4-runtime${static_lib_suffix}")
 
 # macro for lexers generation
 macro(antlr4cpp_process_grammar

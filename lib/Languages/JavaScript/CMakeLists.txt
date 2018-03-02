@@ -1,4 +1,4 @@
-project(JavaScript)
+project(JavaScriptLanguageProvider)
 
 set(namespace javascript)
 set(grammar_lexer JavaScriptCpp)

@@ -2,6 +2,12 @@ cmake_minimum_required(VERSION 3.7)
 
 project(LIBPROTECTION C CXX)
 
+if(NOT CMAKE_SIZEOF_VOID_P EQUAL 8)
+  message(FATAL_ERROR "32-bit build is not supported")
+endif()
+
+option(PROTECTION_INCLUDE_TESTS "Generate build targets for the libprotection unit tests." ON)
+
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 
 if(NOT CMAKE_BUILD_TYPE)
@@ -16,6 +22,8 @@ if(uppercase_CMAKE_BUILD_TYPE STREQUAL "DEBUG")
   #set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGE} -fsanitize=address -fno-omit-frame-pointer")
   #set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGE} -fsanitize=address -fno-omit-frame-pointer")
 endif()
+
+set(CMAKE_CXX_STANDARD 11)
 
 set(PROTECTION_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 set(SUBMODULES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/submodules)
@@ -32,14 +40,17 @@ message(STATUS "Found antlr4cpp libs: ${ANTLR4CPP_LIBS} and includes: ${ANTLR4CP
 set(FMT_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/submodules/fmt)
 add_subdirectory(${FMT_ROOT} EXCLUDE_FROM_ALL)
 
-add_definitions(-Wall -Werror -std=c++11 -fPIC -Wno-attributes)
+if(MSVC)
+  add_definitions(/W3 /D_CRT_SECURE_NO_WARNINGS /WX- /DLIBPRROTECTION_DLL /DANTLR4CPP_STATIC)
+else()
+  add_definitions(-Wall -Werror -fPIC -Wno-attributes)
+endif()
 
 include_directories(${PROTECTION_INCLUDE_DIR})
 include_directories(${SUBMODULES_DIR})
 
 add_subdirectory(lib)
 
-option(PROTECTION_INCLUDE_TESTS "Generate build targets for the libprotection unit tests." ON)
 if(PROTECTION_INCLUDE_TESTS)
   enable_testing()
   include(addTest)

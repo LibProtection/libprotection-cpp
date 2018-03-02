@@ -1,6 +1,6 @@
-#include <catch/single_include/catch.hpp>
-#include "protection/SafeString.h"
 #include "protection/Languages.h"
+#include "protection/SafeString.h"
+#include <catch/single_include/catch.hpp>
 
 using namespace protection::injections;
 

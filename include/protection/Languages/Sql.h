@@ -1400,7 +1400,7 @@ class Sql final : public AntlrLanguageProvider {
 public:
   Sql() = default;
 
-  std::pair<std::string, bool> trySanitize(const std::string &text, Token context) const override;
+  std::pair<std::string, bool> trySanitize(const std::string &text, const Token &context) const override;
 
   std::string tokenTypeToString(TokenType type) const override;
 

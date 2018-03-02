@@ -26,13 +26,11 @@ std::vector<Token> RegexLanguageProvider::tokenize(const std::string &text, size
         if (rule.isToken()) {
           auto tokenText = str.substr(0, matchedLength);
 
-          auto token = createToken(rule.getType(), currentPosition + offset,
-                                   currentPosition + offset + tokenText.length() - 1, tokenText);
+          tokens.push_back(createToken(rule.getType(), currentPosition + offset,
+                                       currentPosition + offset + tokenText.length() - 1, tokenText));
 
           str = str.substr(matchedLength);
           currentPosition += matchedLength;
-
-          tokens.push_back(token);
         }
 
         if (rule.isPopMode()) {
@@ -47,13 +45,11 @@ std::vector<Token> RegexLanguageProvider::tokenize(const std::string &text, size
     // Simply error-tolerance strategy: consider current char as error-token and
     // move to next
     if (!isMatched) {
-      auto token =
-          createToken(getErrorTokenType(), currentPosition + offset, currentPosition + offset, str.substr(0, 1));
+      tokens.push_back(
+          createToken(getErrorTokenType(), currentPosition + offset, currentPosition + offset, str.substr(0, 1)));
 
       str = str.substr(1);
       ++currentPosition;
-
-      tokens.push_back(token);
     }
   }
   return tokens;

@@ -18,7 +18,9 @@ const std::vector<RegexRule> &FilePath::getMainModeRules() const {
   return mainModeRules;
 }
 
-std::pair<std::string, bool> FilePath::trySanitize(const std::string &text, Token) const { return {{}, false}; };
+std::pair<std::string, bool> FilePath::trySanitize(const std::string &text, const Token &) const {
+  return {{}, false};
+};
 
 Token FilePath::createToken(TokenType type, size_t lowerBound, size_t upperBound, const std::string &text) const {
   return Token(this, type, lowerBound, upperBound, text, isTrivial(type, text));

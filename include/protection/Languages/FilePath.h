@@ -17,7 +17,7 @@ class FilePath final : public RegexLanguageProvider {
   friend Single<FilePath>;
 
 public:
-  std::pair<std::string, bool> trySanitize(const std::string &text, Token) const override;
+  std::pair<std::string, bool> trySanitize(const std::string &text, const Token &) const override;
 
   std::string tokenTypeToString(TokenType type) const override;
 

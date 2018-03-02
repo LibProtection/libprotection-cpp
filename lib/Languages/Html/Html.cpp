@@ -176,7 +176,7 @@ std::string Html::trimQuotes(const Token &token, size_t &offset) const {
   return tokenText;
 }
 
-std::pair<std::string, bool> Html::trySanitize(const std::string &text, Token context) const {
+std::pair<std::string, bool> Html::trySanitize(const std::string &text, const Token &context) const {
   if (dynamic_cast<decltype(this)>(context.languageProvider)) {
     return {htmlEncode(text, static_cast<HtmlTokenType>(context.tokenType)), true};
   } else if (dynamic_cast<const Url *>(context.languageProvider)) {

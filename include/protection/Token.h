@@ -14,15 +14,16 @@ class LanguageProvider;
 
 using TokenType = size_t;
 
-struct Token {
+struct LIBPRROTECTION_EXPORT Token {
   const LanguageProvider *languageProvider;
   TokenType tokenType;
-  const std::string text;
+  std::string text;
   Range range;
   bool isTrivial;
 
   Token(const LanguageProvider *provider, TokenType type, size_t lowerBound, size_t upperBound, const std::string &t,
         bool isTrivial);
+  Token(const Token &rhs);
 
   std::string toString() const;
 };

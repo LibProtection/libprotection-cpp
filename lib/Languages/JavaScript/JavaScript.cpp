@@ -38,7 +38,7 @@ bool JavaScript::isTrivial(TokenType type, const std::string &) const {
   return false;
 }
 
-std::pair<std::string, bool> JavaScript::trySanitize(const std::string &text, Token context) const {
+std::pair<std::string, bool> JavaScript::trySanitize(const std::string &text, const Token &context) const {
   if (dynamic_cast<decltype(this)>(context.languageProvider)) {
     auto encodeResult = tryJavaScriptEncode(text, context.tokenType);
     if (encodeResult.second) {

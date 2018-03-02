@@ -4,7 +4,7 @@
 namespace protection {
 namespace injections {
 
-std::pair<std::string, bool> Sql::trySanitize(const std::string &text, Token context) const {
+std::pair<std::string, bool> Sql::trySanitize(const std::string &text, const Token& context) const {
   if (dynamic_cast<decltype(this)>(context.languageProvider)) {
     auto encodeResult = trySqlEncode(text, (SqlTokenType)context.tokenType);
     if (encodeResult.second) {
