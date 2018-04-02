@@ -27,8 +27,8 @@ struct LIBPRROTECTION_EXPORT Token {
 
   ~Token() = default;
   Token(Token &&rhs) noexcept = default;
-  Token &operator=(const Token &rhs) = delete;
-  Token &operator=(Token &&rhs) = delete;
+  Token &operator=(const Token &rhs) = default;
+  Token &operator=(Token &&rhs) = default;
 
   std::string toString() const;
 };
