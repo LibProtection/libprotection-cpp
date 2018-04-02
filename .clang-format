@@ -2,4 +2,4 @@
 Language:        Cpp
 BasedOnStyle:    LLVM
 SortIncludes:    false
-ColumnLimit:     120     
+ColumnLimit:     120

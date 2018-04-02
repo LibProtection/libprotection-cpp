@@ -16,8 +16,8 @@ std::unique_ptr<antlr4::Lexer> JavaScript::createLexer(const std::string &text) 
       new javascript::JavaScriptCppLexer(new antlr4::ANTLRInputStream(text)));
 }
 
-bool JavaScript::isTrivial(TokenType type, const std::string &) const {
-  switch ((JavaScriptTokenType)type) {
+bool JavaScript::isTrivial(TokenType type, const std::string & /*unused*/) const {
+  switch (static_cast<JavaScriptTokenType>(type)) {
   case JavaScriptTokenType::LineTerminator:
 
   case JavaScriptTokenType::MultiLineComment:
@@ -39,7 +39,7 @@ bool JavaScript::isTrivial(TokenType type, const std::string &) const {
 }
 
 std::pair<std::string, bool> JavaScript::trySanitize(const std::string &text, const Token &context) const {
-  if (dynamic_cast<decltype(this)>(context.languageProvider)) {
+  if (dynamic_cast<decltype(this)>(context.languageProvider) != nullptr) {
     auto encodeResult = tryJavaScriptEncode(text, context.tokenType);
     if (encodeResult.second) {
       return encodeResult;

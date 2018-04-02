@@ -1,9 +1,9 @@
 #ifndef PROTECTION_FILEPATH_H
 #define PROTECTION_FILEPATH_H
 
-#include "protection/Token.h"
 #include "protection/RegexLanguageProvider.h"
 #include "protection/Single.h"
+#include "protection/Token.h"
 
 #include <string>
 #include <vector>
@@ -17,7 +17,7 @@ class FilePath final : public RegexLanguageProvider {
   friend Single<FilePath>;
 
 public:
-  std::pair<std::string, bool> trySanitize(const std::string &text, const Token &) const override;
+  std::pair<std::string, bool> trySanitize(const std::string &text, const Token & /*unused*/) const override;
 
   std::string tokenTypeToString(TokenType type) const override;
 

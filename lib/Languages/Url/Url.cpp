@@ -1,8 +1,8 @@
 #include "protection/Languages/Url.h"
 #include "support/WebUtils.h"
 
-#include <numeric>
 #include <map>
+#include <numeric>
 
 namespace protection {
 namespace injections {
@@ -23,7 +23,7 @@ const std::vector<RegexRule> &Url::getMainModeRules() const {
                                                        RegexRule::NoTokenPopMode("[?#]")};
 
   static const std::vector<RegexRule> queryModeRules = {
-      RegexRule::Token("\\?", TOKEN_TYPE(UrlTokenType::Separator)),
+      RegexRule::Token(R"(\?)", TOKEN_TYPE(UrlTokenType::Separator)),
       RegexRule::Token("[^?/=&#]+", TOKEN_TYPE(UrlTokenType::QueryEntry)),
       RegexRule::Token("[=&]", TOKEN_TYPE(UrlTokenType::Separator)), RegexRule::NoTokenPopMode("#")};
 
@@ -44,8 +44,8 @@ Token Url::createToken(TokenType type, size_t lowerBound, size_t upperBound, con
   return Token(this, type, lowerBound, upperBound, text, isTrivial(type, text));
 }
 
-std::pair<std::string, bool> Url::trySanitize(const std::string &text, const Token& context) const {
-  if (dynamic_cast<decltype(this)>(context.languageProvider)) {
+std::pair<std::string, bool> Url::trySanitize(const std::string &text, const Token &context) const {
+  if (dynamic_cast<decltype(this)>(context.languageProvider) != nullptr) {
     auto encodeResult = tryUrlEncode(text, context.tokenType);
     if (encodeResult.second) {
       return encodeResult;

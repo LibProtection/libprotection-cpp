@@ -3,8 +3,8 @@
 
 #include "protection/Formatter.h"
 
-#include <string>
 #include <iostream>
+#include <string>
 #include <utility>
 
 namespace protection {

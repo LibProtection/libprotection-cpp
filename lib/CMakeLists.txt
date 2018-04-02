@@ -9,7 +9,7 @@ add_library(${PROJECT_NAME} SHARED
         LibProtectionEngine.cpp
         Languages/RegexLanguageProvider.cpp
         Languages/Token.cpp
-        Languages/AntrlLanguageProvider.cpp
+        Languages/AntlrLanguageProvider.cpp
         Languages/RegexRule.cpp)
 
 target_link_libraries(${PROJECT_NAME} PUBLIC FilePathLanguageProvider UrlLanguageProvider SqlLanguageProvider HtmlLanguageProvider JavaScriptLanguageProvider)

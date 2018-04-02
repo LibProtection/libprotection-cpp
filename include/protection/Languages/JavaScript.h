@@ -2,8 +2,8 @@
 #define PROTECTION_JAVASCRIPT_H
 
 #include "protection/AntlrLanguageProvider.h"
-#include "protection/Token.h"
 #include "protection/Single.h"
+#include "protection/Token.h"
 
 namespace protection {
 namespace injections {
