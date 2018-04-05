@@ -130,7 +130,7 @@ private:
 
   TokenType convertAntlrTokenType(size_t antlrTokenType) const override;
 
-  std::unique_ptr<antlr4::Lexer> createLexer(const std::string &text) const override;
+  std::unique_ptr<antlr4::Lexer> createLexer(const std::string &text, antlr4::CharStream *charStream) const override;
 
   bool isTrivial(TokenType type, const std::string &text) const override;
 

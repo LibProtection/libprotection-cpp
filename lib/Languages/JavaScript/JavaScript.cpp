@@ -11,9 +11,8 @@ Token JavaScript::createToken(TokenType type, size_t lowerBound, size_t upperBou
 
 TokenType JavaScript::convertAntlrTokenType(size_t antlrTokenType) const { return antlrTokenType; }
 
-std::unique_ptr<antlr4::Lexer> JavaScript::createLexer(const std::string &text) const {
-  return std::unique_ptr<javascript::JavaScriptCppLexer>(
-      new javascript::JavaScriptCppLexer(new antlr4::ANTLRInputStream(text)));
+std::unique_ptr<antlr4::Lexer> JavaScript::createLexer(const std::string &text, antlr4::CharStream *charStream) const {
+  return std::unique_ptr<javascript::JavaScriptCppLexer>(new javascript::JavaScriptCppLexer(charStream));
 }
 
 bool JavaScript::isTrivial(TokenType type, const std::string & /*unused*/) const {

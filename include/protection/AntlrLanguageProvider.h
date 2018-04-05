@@ -18,7 +18,7 @@ protected:
 
   virtual TokenType convertAntlrTokenType(size_t antlrTokenType) const = 0;
 
-  virtual std::unique_ptr<antlr4::Lexer> createLexer(const std::string &text) const = 0;
+  virtual std::unique_ptr<antlr4::Lexer> createLexer(const std::string &text, antlr4::CharStream *charStream) const = 0;
 };
 
 } // namespace injections

@@ -63,8 +63,8 @@ bool Sql::isTrivial(TokenType type, const std::string & /*unused*/) const {
   }
 }
 
-std::unique_ptr<antlr4::Lexer> Sql::createLexer(const std::string &text) const {
-  return std::unique_ptr<sql::SQLLexer>(new sql::SQLLexer(new antlr4::ANTLRInputStream(text)));
+std::unique_ptr<antlr4::Lexer> Sql::createLexer(const std::string &text, antlr4::CharStream *charStream) const {
+  return std::unique_ptr<sql::SQLLexer>(new sql::SQLLexer(charStream));
 }
 
 TokenType Sql::convertAntlrTokenType(size_t antlrTokenType) const { return antlrTokenType; }

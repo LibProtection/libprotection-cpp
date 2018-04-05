@@ -22,8 +22,8 @@ Token Html::createToken(TokenType type, size_t lowerBound, size_t upperBound, co
   return Token(this, type, lowerBound, upperBound, text, isTrivial(type, text));
 }
 
-std::unique_ptr<antlr4::Lexer> Html::createLexer(const std::string &text) const {
-  return std::unique_ptr<html::HTMLLexer>(new html::HTMLLexer(new antlr4::ANTLRInputStream(text)));
+std::unique_ptr<antlr4::Lexer> Html::createLexer(const std::string &text, antlr4::CharStream *charStream) const {
+  return std::unique_ptr<html::HTMLLexer>(new html::HTMLLexer(charStream));
 }
 
 std::vector<Token> Html::tokenize(const std::string &text, size_t offset) const {
