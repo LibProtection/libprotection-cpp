@@ -1,0 +1,63 @@
+version: 0.11.{build}
+image:
+- Visual Studio 2015
+- Ubuntu
+
+branches:
+  only:
+  - dev
+
+skip_tags: true
+
+configuration:
+- Release
+
+platform:
+- x64
+
+matrix:
+  fast_finish: true
+
+init:
+- cmd: set arch=
+- cmd: if "%platform%"=="x64" ( set arch=Win64)
+- cmd: echo %arch%
+- ps: |
+        if ($isWindows) {
+          if ($env:APPVEYOR_BUILD_WORKER_IMAGE -eq "Visual Studio 2015") {
+            $env:GENERATOR = "Visual Studio 14 2015 $env:arch"
+          }
+        } else {
+          $env:GENERATOR = "Unix Makefiles"
+          $env:configuration = "Release"
+        }
+- ps: echo $env:GENERATOR
+- ps: echo $env:configuration
+- git config --global core.autocrlf input
+
+install:
+- git submodule update --init --recursive
+
+build:
+  verbosity: detailed
+
+before_build:
+- ps: mkdir build_$env:configuration
+- ps: cd build_$env:configuration
+- cmake --version
+
+build_script:
+- cmd: cmake .. -G "%GENERATOR%" -DCMAKE_BUILD_TYPE=%configuration%
+- sh: cmake .. -G "$GENERATOR" -DCMAKE_BUILD_TYPE=$configuration
+- ps: cmake --build . --config $env:configuration
+
+test_script:
+- ctest --output-on-failure --debug
+
+notifications:
+- provider: Email
+  to:
+  - libprotection@outlook.com
+  on_build_success: true
+  on_build_failure: true
+  on_build_status_changed: true
