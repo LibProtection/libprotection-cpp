@@ -4,9 +4,10 @@
 namespace protection {
 namespace injections {
 
-Token::Token(const LanguageProvider *provider, TokenType type, size_t lowerBound, size_t upperBound,
-             const std::string &t, bool trivial)
-    : languageProvider{provider}, tokenType{type}, text{t}, range{lowerBound, upperBound}, isTrivial{trivial} {}
+Token::Token(const LanguageProvider *provider, TokenType type, size_t lowerBound, size_t upperBound, std::string t,
+             bool trivial)
+    : languageProvider{provider}, tokenType{type}, text{std::move(t)}, range{lowerBound, upperBound},
+      isTrivial{trivial} {}
 
 Token::Token(const Token &rhs) : range{rhs.range.lowerBound, rhs.range.upperBound} {
   languageProvider = rhs.languageProvider;
@@ -16,7 +17,7 @@ Token::Token(const Token &rhs) : range{rhs.range.lowerBound, rhs.range.upperBoun
 }
 
 std::string Token::toString() const {
-  return languageProvider->tokenTypeToString(tokenType) + ":\"" + text + "\":" + range.toString();
+  return languageProvider->tokenTypeToString(tokenType) + R"(:")" + text + R"(":)" + range.toString();
 }
 
 } // namespace injections

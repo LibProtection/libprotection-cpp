@@ -4,7 +4,8 @@ namespace protection {
 namespace injections {
 
 std::vector<Token> AntlrLanguageProvider::tokenize(const std::string &text, size_t offset) const {
-  auto lexer = createLexer(text);
+  auto charStream = antlr4::ANTLRInputStream(text);
+  auto lexer = createLexer(text, &charStream);
   auto antlrToken = lexer->nextToken();
 
   std::vector<Token> tokens;

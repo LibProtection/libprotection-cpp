@@ -1,7 +1,8 @@
-#pragma once
+#ifndef PROTECTION_RANGE_H
+#define PROTECTION_RANGE_H
 
+#include <cstdint>
 #include <functional>
-#include <stdint.h>
 #include <string>
 
 #ifdef _MSC_VER
@@ -36,3 +37,4 @@ template <> struct hash<Range> {
   }
 };
 } // namespace std
+#endif // PROTECTION_RANGE_H

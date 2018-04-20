@@ -21,9 +21,14 @@ struct LIBPRROTECTION_EXPORT Token {
   Range range;
   bool isTrivial;
 
-  Token(const LanguageProvider *provider, TokenType type, size_t lowerBound, size_t upperBound, const std::string &t,
-        bool isTrivial);
+  Token(const LanguageProvider *provider, TokenType type, size_t lowerBound, size_t upperBound, std::string t,
+        bool trivial);
   Token(const Token &rhs);
+
+  ~Token() = default;
+  Token(Token &&rhs) noexcept = default;
+  Token &operator=(const Token &rhs) = default;
+  Token &operator=(Token &&rhs) = default;
 
   std::string toString() const;
 };

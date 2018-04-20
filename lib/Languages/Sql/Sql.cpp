@@ -4,9 +4,9 @@
 namespace protection {
 namespace injections {
 
-std::pair<std::string, bool> Sql::trySanitize(const std::string &text, const Token& context) const {
-  if (dynamic_cast<decltype(this)>(context.languageProvider)) {
-    auto encodeResult = trySqlEncode(text, (SqlTokenType)context.tokenType);
+std::pair<std::string, bool> Sql::trySanitize(const std::string &text, const Token &context) const {
+  if (dynamic_cast<decltype(this)>(context.languageProvider) != nullptr) {
+    auto encodeResult = trySqlEncode(text, static_cast<SqlTokenType>(context.tokenType));
     if (encodeResult.second) {
       return encodeResult;
     }
@@ -44,7 +44,7 @@ Token Sql::createToken(TokenType type, size_t lowerBound, size_t upperBound, con
   return Token(this, type, lowerBound, upperBound, text, isTrivial(type, text));
 }
 
-bool Sql::isTrivial(TokenType type, const std::string &text) const {
+bool Sql::isTrivial(TokenType type, const std::string & /*unused*/) const {
   switch (static_cast<SqlTokenType>(type)) {
   case SqlTokenType::Space:
   case SqlTokenType::CommentInput:
@@ -63,8 +63,8 @@ bool Sql::isTrivial(TokenType type, const std::string &text) const {
   }
 }
 
-std::unique_ptr<antlr4::Lexer> Sql::createLexer(const std::string &text) const {
-  return std::unique_ptr<sql::SQLLexer>(new sql::SQLLexer(new antlr4::ANTLRInputStream(text)));
+std::unique_ptr<antlr4::Lexer> Sql::createLexer(const std::string &text, antlr4::CharStream *charStream) const {
+  return std::unique_ptr<sql::SQLLexer>(new sql::SQLLexer(charStream));
 }
 
 TokenType Sql::convertAntlrTokenType(size_t antlrTokenType) const { return antlrTokenType; }

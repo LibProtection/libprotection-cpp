@@ -6,6 +6,8 @@ if(NOT CMAKE_SIZEOF_VOID_P EQUAL 8)
   message(FATAL_ERROR "32-bit build is not supported")
 endif()
 
+set(CMAKE_CXX_STANDARD 11)
+
 option(PROTECTION_INCLUDE_TESTS "Generate build targets for the libprotection unit tests." ON)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
@@ -18,12 +20,12 @@ endif()
 string(TOUPPER "${CMAKE_BUILD_TYPE}" uppercase_CMAKE_BUILD_TYPE)
 
 if(uppercase_CMAKE_BUILD_TYPE STREQUAL "DEBUG")
-  #add_definitions(-fsanitize=address -fno-omit-frame-pointer)
-  #set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGE} -fsanitize=address -fno-omit-frame-pointer")
-  #set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGE} -fsanitize=address -fno-omit-frame-pointer")
+  if (UNIX)
+    add_definitions(-fno-sanitize-recover=all -fsanitize=address -fno-omit-frame-pointer)
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGE} -fno-sanitize-recover=all -fsanitize=address -fno-omit-frame-pointer")
+    set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGE} -fno-sanitize-recover=all -fsanitize=address -fno-omit-frame-pointer")
+  endif()
 endif()
-
-set(CMAKE_CXX_STANDARD 11)
 
 set(PROTECTION_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 set(SUBMODULES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/submodules)

@@ -1,11 +1,11 @@
 #ifndef PROTECTION_LANGUAGEPROVIDER_H
 #define PROTECTION_LANGUAGEPROVIDER_H
 
-#include "protection/Token.h"
 #include "protection/Range.h"
+#include "protection/Token.h"
 
-#include <vector>
 #include <utility>
+#include <vector>
 
 namespace protection {
 namespace injections {

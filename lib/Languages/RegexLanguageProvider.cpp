@@ -18,7 +18,8 @@ std::vector<Token> RegexLanguageProvider::tokenize(const std::string &text, size
   while (!str.empty()) {
     bool isMatched{false};
 
-    for (auto &rule : modeRuleStack.top()) {
+    auto rules = modeRuleStack.top();
+    for (auto &rule : rules) {
       auto match = rule.tryMatch(str);
       if (match.second && (match.first != 0)) {
         auto matchedLength = match.first;

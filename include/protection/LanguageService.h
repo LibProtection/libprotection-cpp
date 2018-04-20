@@ -40,7 +40,7 @@ public:
       sanitizedString.append(text.substr(positionAtText, charsToAppend));
       auto lowerBound = sanitizedString.length();
       sanitizedString.append(fragments[fragment.first]);
-      sanitizedRanges.push_back(Range{lowerBound, sanitizedString.length() - 1});
+      sanitizedRanges.emplace_back(Range{lowerBound, sanitizedString.length() - 1});
       positionAtText = fragment.first.upperBound + 1;
     }
 

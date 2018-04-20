@@ -1,7 +1,8 @@
+#include "HTMLLexer.h"
+
 #include "protection/Languages/Html.h"
 #include "protection/Languages/JavaScript.h"
 #include "protection/Languages/Url.h"
-#include "HTMLLexer.h"
 #include "support/WebUtils.h"
 
 #include <cctype>
@@ -15,28 +16,27 @@ struct Html::IslandDto {
   std::string text;
 };
 
-const std::set<std::string> Html::htmlUrlAttributes = {"href",     "src",        "manifest",   "poster",   "code",
-                                                       "codebase", "data",       "xlink:href", "xml:base", "from",
-                                                       "to",       "formaction", "action",     "dynsrc",   "lowsrc"};
-
 TokenType Html::convertAntlrTokenType(size_t antlrTokenType) const { return antlrTokenType; }
 
 Token Html::createToken(TokenType type, size_t lowerBound, size_t upperBound, const std::string &text) const {
   return Token(this, type, lowerBound, upperBound, text, isTrivial(type, text));
 }
 
-std::unique_ptr<antlr4::Lexer> Html::createLexer(const std::string &text) const {
-  return std::unique_ptr<html::HTMLLexer>(new html::HTMLLexer(new antlr4::ANTLRInputStream(text)));
+std::unique_ptr<antlr4::Lexer> Html::createLexer(const std::string &text, antlr4::CharStream *charStream) const {
+  return std::unique_ptr<html::HTMLLexer>(new html::HTMLLexer(charStream));
 }
 
 std::vector<Token> Html::tokenize(const std::string &text, size_t offset) const {
+  static const std::set<std::string> htmlUrlAttributes = {"href",     "src",        "manifest",   "poster",   "code",
+                                                          "codebase", "data",       "xlink:href", "xml:base", "from",
+                                                          "to",       "formaction", "action",     "dynsrc",   "lowsrc"};
   auto state = HtmlTokenizerState::Insignificant;
   auto insideScriptTag = false;
 
   std::vector<Token> tokens;
 
   for (const auto &token : AntlrLanguageProvider::tokenize(text, offset)) {
-    if (dynamic_cast<decltype(this)>(token.languageProvider)) {
+    if (dynamic_cast<decltype(this)>(token.languageProvider) != nullptr) {
       auto htmlTokenType = static_cast<HtmlTokenType>(token.tokenType);
       switch (state) {
       case HtmlTokenizerState::EventName:
@@ -66,8 +66,9 @@ std::vector<Token> Html::tokenize(const std::string &text, size_t offset) const 
         case HtmlTokenType::AttributeName: {
 
           auto startsWithIgnoreCase = [&ignoreCaseEqual](const std::string &text, const std::string &substr) {
-            if (text.length() < substr.length())
+            if (text.length() < substr.length()) {
               return false;
+            }
 
             return std::equal(substr.begin(), substr.end(), text.begin(), ignoreCaseEqual);
           };
@@ -154,7 +155,7 @@ std::unique_ptr<Html::IslandDto> Html::isContextChanged(const Token &htmlToken, 
     break;
   }
 
-  return std::move(islandData);
+  return islandData;
 }
 
 std::string Html::trimQuotes(const Token &token, size_t &offset) const {
@@ -177,14 +178,14 @@ std::string Html::trimQuotes(const Token &token, size_t &offset) const {
 }
 
 std::pair<std::string, bool> Html::trySanitize(const std::string &text, const Token &context) const {
-  if (dynamic_cast<decltype(this)>(context.languageProvider)) {
+  if (dynamic_cast<decltype(this)>(context.languageProvider) != nullptr) {
     return {htmlEncode(text, static_cast<HtmlTokenType>(context.tokenType)), true};
-  } else if (dynamic_cast<const Url *>(context.languageProvider)) {
+  } else if (dynamic_cast<const Url *>(context.languageProvider) != nullptr) {
     auto urlSanitized = Single<Url>::instance().trySanitize(text, context);
     if (urlSanitized.second) {
       return {htmlEncode(urlSanitized.first, HtmlTokenType::AttributeValue), true};
     }
-  } else if (dynamic_cast<const JavaScript *>(context.languageProvider)) {
+  } else if (dynamic_cast<const JavaScript *>(context.languageProvider) != nullptr) {
     auto ecmaScriptSanitized = Single<JavaScript>::instance().trySanitize(text, context);
     if (ecmaScriptSanitized.second) {
       return {htmlEncode(ecmaScriptSanitized.first, HtmlTokenType::HtmlText), true};
@@ -196,7 +197,7 @@ std::pair<std::string, bool> Html::trySanitize(const std::string &text, const To
   return {{}, false};
 }
 
-bool Html::isTrivial(TokenType type, const std::string &) const {
+bool Html::isTrivial(TokenType type, const std::string & /*unused*/) const {
   switch (static_cast<HtmlTokenType>(type)) {
   case HtmlTokenType::HtmlComment:
   case HtmlTokenType::HtmlConditionalComment:

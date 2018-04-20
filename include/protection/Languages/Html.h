@@ -2,8 +2,8 @@
 #define PROTECTION_HTML_H
 
 #include "protection/AntlrLanguageProvider.h"
-#include "protection/Token.h"
 #include "protection/Single.h"
+#include "protection/Token.h"
 
 #include <set>
 
@@ -60,7 +60,7 @@ private:
 
   TokenType convertAntlrTokenType(size_t antlrTokenType) const override;
 
-  std::unique_ptr<antlr4::Lexer> createLexer(const std::string &text) const override;
+  std::unique_ptr<antlr4::Lexer> createLexer(const std::string &text, antlr4::CharStream *charStream) const override;
 
   bool isTrivial(TokenType type, const std::string &text) const override;
 
@@ -72,8 +72,6 @@ private:
   std::string trimQuotes(const Token &token, size_t &offset) const;
 
   std::string htmlEncode(const std::string &text, HtmlTokenType type) const;
-
-  static const std::set<std::string> htmlUrlAttributes;
 };
 
 } // namespace injections

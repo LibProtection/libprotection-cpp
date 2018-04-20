@@ -12,7 +12,7 @@ namespace protection {
 namespace injections {
 
 bool Detect(const std::string &text, const std::vector<Range> &taintedRanges, Grammar grammar);
-}
+} // namespace injections
 } // namespace protection
 
 #endif // PROJECT_LIBPROTECTIONENGINE_H
