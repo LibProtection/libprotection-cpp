@@ -5,6 +5,7 @@
 #include "protection/Range.h"
 #include "protection/Single.h"
 
+#include <algorithm>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -12,10 +13,25 @@
 namespace protection {
 namespace injections {
 
+struct SanitizeResult {
+  SanitizeResult(bool sanitized, std::vector<Token> t, std::string sanitizedStr, Token token);
+
+  SanitizeResult(const SanitizeResult &) = default;
+  SanitizeResult(SanitizeResult &&) = default;
+
+  SanitizeResult &operator=(const SanitizeResult &) = default;
+  SanitizeResult &operator=(SanitizeResult &&) = default;
+
+  bool success{false};
+  std::vector<Token> tokens;
+  std::string sanitizedString;
+  Token attackToken;
+};
+
 class LIBPRROTECTION_EXPORT LanguageService {
 public:
   template <typename LP>
-  static std::pair<std::string, bool> trySanitize(const std::string &text, const std::vector<Range> &taintedRanges) {
+  static SanitizeResult trySanitize(const std::string &text, const std::vector<Range> &taintedRanges) {
     auto sanitizedRanges = std::vector<Range>{};
     auto languageProvider = Single<LP>::instance();
     auto tokens = languageProvider.tokenize(text);
@@ -23,7 +39,6 @@ public:
 
     // Try to sanitize all attacked text's fragments
     for (const auto &tokensScope : getTokensScopes(tokens, taintedRanges)) {
-
       auto range = tokensScope.range;
       auto fragment = text.substr(range.lowerBound, range.length());
 
@@ -48,10 +63,13 @@ public:
       sanitizedString.append(text.substr(positionAtText, text.length() - positionAtText));
     }
 
-    return {sanitizedString, Validate<LP>(sanitizedString, sanitizedRanges)};
+    auto validateResult = Validate<LP>(sanitizedString, sanitizedRanges);
+    return SanitizeResult(validateResult.second, tokens, (validateResult.second) ? sanitizedString : std::string{},
+                          validateResult.first);
   }
 
-  template <typename LP> static bool Validate(const std::string &text, const std::vector<Range> &ranges) {
+  template <typename LP>
+  static std::pair<Token, bool> Validate(const std::string &text, const std::vector<Range> &ranges) {
     auto languageProvider = Single<LP>::instance();
     auto tokens = languageProvider.tokenize(text);
     auto scopesCount{0};
@@ -61,11 +79,15 @@ public:
       ++scopesCount;
       allTrivial = allTrivial && scope.isTrivial();
       if ((scope.tokens.size() > 1 || scopesCount > 1) && !allTrivial) {
-        return false;
+        auto it = std::find_if(scope.tokens.begin(), scope.tokens.end(),
+                               [](const Token &token) -> bool { return !token.isTrivial; });
+        if (it != scope.tokens.end()) {
+          return {*it, false};
+        }
       }
     }
 
-    return true;
+    return {Token(), true};
   }
 
 private:
