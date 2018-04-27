@@ -24,7 +24,7 @@ public:
     BasicFormatter<char> formatter(fmt::ArgList(fmt::internal::make_type(args...), array), w);
     formatter.format(formatStr);
 
-    return std::make_tuple(w.c_str(), formatter.get_tainted_ranges(), formatter.get_associated_to_range_indexes());
+    return std::make_tuple(w.str(), formatter.get_tainted_ranges(), formatter.get_associated_to_range_indexes());
   }
 };
 
