@@ -13,7 +13,7 @@
 namespace protection {
 namespace injections {
 
-struct SanitizeResult {
+struct LIBPRROTECTION_EXPORT SanitizeResult {
   SanitizeResult(bool sanitized, std::vector<Token> t, std::string sanitizedStr, Token token);
 
   SanitizeResult(const SanitizeResult &) = default;
@@ -54,7 +54,7 @@ public:
       auto charsToAppend = fragment.first.lowerBound - positionAtText;
       sanitizedString.append(text.substr(positionAtText, charsToAppend));
       auto lowerBound = sanitizedString.length();
-      sanitizedString.append(fragments[fragment.first]);
+      sanitizedString.append(fragment.second);
       sanitizedRanges.emplace_back(Range{lowerBound, sanitizedString.length() - 1});
       positionAtText = fragment.first.upperBound + 1;
     }
@@ -63,13 +63,13 @@ public:
       sanitizedString.append(text.substr(positionAtText, text.length() - positionAtText));
     }
 
-    auto validateResult = Validate<LP>(sanitizedString, sanitizedRanges);
+    auto validateResult = validate<LP>(sanitizedString, sanitizedRanges);
     return SanitizeResult(validateResult.second, tokens, (validateResult.second) ? sanitizedString : std::string{},
                           validateResult.first);
   }
 
   template <typename LP>
-  static std::pair<Token, bool> Validate(const std::string &text, const std::vector<Range> &ranges) {
+  static std::pair<Token, bool> validate(const std::string &text, const std::vector<Range> &ranges) {
     auto languageProvider = Single<LP>::instance();
     auto tokens = languageProvider.tokenize(text);
     auto scopesCount{0};

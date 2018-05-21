@@ -40,7 +40,7 @@ private:
 
     auto sanitizeResult = LanguageService::trySanitize<LP>(formattedString, taintedRanges);
     if (sanitizeResult.success) {
-      return FormatResult::Success(sanitizeResult.tokens, sanitizeResult.sanitizedString);
+      return FormatResult::success(sanitizeResult.tokens, sanitizeResult.sanitizedString);
     }
 
     auto it = std::find_if(taintedRanges.begin(), taintedRanges.end(), [&](const Range &range) -> bool {
@@ -50,7 +50,7 @@ private:
       throw std::runtime_error{"Cannot find attack argument for attack token."};
     }
     auto attackArgumentIndex = std::distance(taintedRanges.begin(), it);
-    return FormatResult::Fail(sanitizeResult.tokens, associatedToRangeIndexes[attackArgumentIndex]);
+    return FormatResult::fail(sanitizeResult.tokens, associatedToRangeIndexes[attackArgumentIndex]);
   }
 };
 

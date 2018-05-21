@@ -9,13 +9,13 @@
 namespace protection {
 namespace injections {
 
-struct FormatResult {
+struct LIBPRROTECTION_EXPORT FormatResult {
   FormatResult(std::vector<Token> t, bool detected, size_t index, const std::string &s);
   FormatResult() = default;
 
-  static FormatResult Success(std::vector<Token> tokens, const std::string &formattedString);
+  static FormatResult success(std::vector<Token> tokens, const std::string &formattedString);
 
-  static FormatResult Fail(std::vector<Token> tokens, int injectionPointIndex);
+  static FormatResult fail(std::vector<Token> tokens, int injectionPointIndex);
 
   // array of tokenization artifacts
   std::vector<Token> tokens;
