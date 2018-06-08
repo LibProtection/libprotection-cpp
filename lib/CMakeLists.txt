@@ -3,10 +3,12 @@ project(protection)
 add_subdirectory(Support)
 add_subdirectory(Languages)
 
+
 add_library(${PROJECT_NAME} SHARED
         Range.cpp
         LanguageService.cpp
         LibProtectionEngine.cpp
+        FormatResult.cpp
         Languages/RegexLanguageProvider.cpp
         Languages/Token.cpp
         Languages/AntlrLanguageProvider.cpp

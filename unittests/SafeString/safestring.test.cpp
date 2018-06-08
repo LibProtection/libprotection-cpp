@@ -20,7 +20,7 @@ TEST_CASE("Sql") {
 
 TEST_CASE("JavaScript") {
   REQUIRE("operationResult.innerText = 'Hello from internal JavaScript code!';" ==
-          SafeString<Sql>::format("operationResult.innerText = '{0}';", "Hello from internal JavaScript code!"));
+          SafeString<JavaScript>::format("operationResult.innerText = '{0}';", "Hello from internal JavaScript code!"));
 }
 
 TEST_CASE("Html") {

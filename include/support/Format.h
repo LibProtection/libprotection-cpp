@@ -74,6 +74,7 @@ private:
   static std::vector<std::string> formats;
 
   std::vector<Range> tainted_ranges;
+  std::vector<size_t> associated_to_range_indexes;
 
 public:
   /**
@@ -93,9 +94,11 @@ public:
   void format(fmt::BasicCStringRef<Char> format_str);
 
   // Formats a single argument and advances format_str, a format string pointer.
-  const Char *format(const Char *&format_str, const fmt::internal::Arg &arg);
+  const Char *format(const Char *&format_str, const fmt::internal::Arg &arg, size_t arg_idx);
 
   const std::vector<Range> &get_tainted_ranges() const { return tainted_ranges; }
+
+  const std::vector<size_t> &get_associated_to_range_indexes() const { return associated_to_range_indexes; }
 };
 
 template <typename Char, typename AF> std::vector<std::string> BasicFormatter<Char, AF>::formats = {"safe"};
@@ -141,6 +144,7 @@ inline fmt::internal::Arg BasicFormatter<Char, AF>::parse_arg_name(const Char *&
 template <typename Char, typename AF> void BasicFormatter<Char, AF>::format(fmt::BasicCStringRef<Char> format_str) {
   const Char *s = format_str.c_str();
   const Char *start = s;
+  size_t next_arg_idx = 0;
   while (*s) {
     Char c = *s++;
     if (c != '{' && c != '}')
@@ -153,15 +157,17 @@ template <typename Char, typename AF> void BasicFormatter<Char, AF>::format(fmt:
     if (c == '}')
       FMT_THROW(fmt::FormatError("unmatched '}' in format string"));
     write(writer_, start, s - 1);
-
-    fmt::internal::Arg arg = fmt::internal::is_name_start(*s) ? parse_arg_name(s) : parse_arg_index(s);
-    start = s = format(s, arg);
+    const Char *s_idx = s;
+    size_t idx = *s_idx < '0' || *s_idx > '9' ? next_arg_idx++ : fmt::internal::parse_nonnegative_int(s_idx);
+    fmt::internal::Arg arg = parse_arg_index(s);
+    start = s = format(s, arg, idx);
   }
   write(writer_, start, s);
 }
 
 template <typename Char, typename ArgFormatter>
-const Char *BasicFormatter<Char, ArgFormatter>::format(const Char *&format_str, const fmt::internal::Arg &arg) {
+const Char *BasicFormatter<Char, ArgFormatter>::format(const Char *&format_str, const fmt::internal::Arg &arg,
+                                                       size_t arg_idx) {
   using fmt::internal::Arg;
   const Char *s = format_str;
   typename ArgFormatter::SpecType spec;
@@ -380,6 +386,7 @@ const Char *BasicFormatter<Char, ArgFormatter>::format(const Char *&format_str, 
   if (!safe) {
     size_t upperBound = writer_.size() - 1;
     tainted_ranges.push_back(Range(lowerBound, upperBound));
+    associated_to_range_indexes.push_back(arg_idx);
   }
 
   return s;

@@ -6,6 +6,7 @@
 #include "support/Format.h"
 
 #include <string>
+#include <tuple>
 
 namespace protection {
 namespace injections {
@@ -13,7 +14,8 @@ namespace injections {
 template <typename LP> class Formatter {
 public:
   template <typename... Args>
-  static std::pair<std::string, bool> tryFormat(const std::string &formatStr, const Args &... args) {
+  static std::tuple<std::string, std::vector<Range>, std::vector<size_t>> format(const std::string &formatStr,
+                                                                                 const Args &... args) {
 
     typedef fmt::internal::ArgArray<sizeof...(Args)> ArgArray;
     typename ArgArray::Type array{ArgArray::template make<BasicFormatter<char>>(args)...};
@@ -22,7 +24,7 @@ public:
     BasicFormatter<char> formatter(fmt::ArgList(fmt::internal::make_type(args...), array), w);
     formatter.format(formatStr);
 
-    return LanguageService::trySanitize<LP>(w.str(), formatter.get_tainted_ranges());
+    return std::make_tuple(w.str(), formatter.get_tainted_ranges(), formatter.get_associated_to_range_indexes());
   }
 };
 
