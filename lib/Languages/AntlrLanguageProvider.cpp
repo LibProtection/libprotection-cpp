@@ -12,7 +12,7 @@ std::vector<Token> AntlrLanguageProvider::tokenize(const std::string &text, size
 
   while (antlrToken->getType() != EOF) {
     tokens.push_back(createToken(convertAntlrTokenType(antlrToken->getType()), antlrToken->getStartIndex() + offset,
-                                 antlrToken->getStopIndex() + offset, antlrToken->getText()));
+                                 antlrToken->getStopIndex() + offset + 1, antlrToken->getText()));
 
     antlrToken = lexer->nextToken();
   }

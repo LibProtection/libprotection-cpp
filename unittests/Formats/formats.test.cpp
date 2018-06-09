@@ -29,51 +29,51 @@ TEST_CASE("ArgsInDifferentPositions") {
     REQUIRE("42" == formatTest("{0}", taintedRanges, 42));
     REQUIRE(1 == taintedRanges.size());
     REQUIRE(0 == taintedRanges[0].lowerBound);
-    REQUIRE(1 == taintedRanges[0].upperBound);
+    REQUIRE(2 == taintedRanges[0].upperBound);
   }
   SECTION("before 42") {
     REQUIRE("before 42" == formatTest("before {0}", taintedRanges, 42));
     REQUIRE(1 == taintedRanges.size());
     REQUIRE(7 == taintedRanges[0].lowerBound);
-    REQUIRE(8 == taintedRanges[0].upperBound);
+    REQUIRE(9 == taintedRanges[0].upperBound);
   }
   SECTION("42 after") {
     REQUIRE("42 after" == formatTest("{0} after", taintedRanges, 42));
     REQUIRE(1 == taintedRanges.size());
     REQUIRE(0 == taintedRanges[0].lowerBound);
-    REQUIRE(1 == taintedRanges[0].upperBound);
+    REQUIRE(2 == taintedRanges[0].upperBound);
   }
   SECTION("before 42 after") {
     REQUIRE("before 42 after" == formatTest("before {0} after", taintedRanges, 42));
     REQUIRE(1 == taintedRanges.size());
     REQUIRE(7 == taintedRanges[0].lowerBound);
-    REQUIRE(8 == taintedRanges[0].upperBound);
+    REQUIRE(9 == taintedRanges[0].upperBound);
   }
   SECTION("answer = 42") {
     REQUIRE("answer = 42" == formatTest("{0} = {1}", taintedRanges, "answer", 42));
     REQUIRE(2 == taintedRanges.size());
     REQUIRE(0 == taintedRanges[0].lowerBound);
-    REQUIRE(5 == taintedRanges[0].upperBound);
+    REQUIRE(6 == taintedRanges[0].upperBound);
     REQUIRE(9 == taintedRanges[1].lowerBound);
-    REQUIRE(10 == taintedRanges[1].upperBound);
+    REQUIRE(11 == taintedRanges[1].upperBound);
   }
   SECTION("42 is the answer") {
     REQUIRE("42 is the answer" == formatTest("{1} is the {0}", taintedRanges, "answer", 42));
     REQUIRE(2 == taintedRanges.size());
     REQUIRE(0 == taintedRanges[0].lowerBound);
-    REQUIRE(1 == taintedRanges[0].upperBound);
+    REQUIRE(2 == taintedRanges[0].upperBound);
     REQUIRE(10 == taintedRanges[1].lowerBound);
-    REQUIRE(15 == taintedRanges[1].upperBound);
+    REQUIRE(16 == taintedRanges[1].upperBound);
   }
   SECTION("abracadabra") {
     REQUIRE("abracadabra" == formatTest("{0}{1}{0}", taintedRanges, "abra", "cad"));
     REQUIRE(3 == taintedRanges.size());
     REQUIRE(0 == taintedRanges[0].lowerBound);
-    REQUIRE(3 == taintedRanges[0].upperBound);
+    REQUIRE(4 == taintedRanges[0].upperBound);
     REQUIRE(4 == taintedRanges[1].lowerBound);
-    REQUIRE(6 == taintedRanges[1].upperBound);
+    REQUIRE(7 == taintedRanges[1].upperBound);
     REQUIRE(7 == taintedRanges[2].lowerBound);
-    REQUIRE(10 == taintedRanges[2].upperBound);
+    REQUIRE(11 == taintedRanges[2].upperBound);
   }
   SECTION("42:safe") {
     REQUIRE("42" == formatTest("{0:safe}", taintedRanges, 42));
@@ -95,13 +95,13 @@ TEST_CASE("ArgsInDifferentPositions") {
     REQUIRE("answer = 42" == formatTest("{0:safe} = {1}", taintedRanges, "answer", 42));
     REQUIRE(1 == taintedRanges.size());
     REQUIRE(9 == taintedRanges[0].lowerBound);
-    REQUIRE(10 == taintedRanges[0].upperBound);
+    REQUIRE(11 == taintedRanges[0].upperBound);
   }
   SECTION("answer = 42:safe") {
     REQUIRE("answer = 42" == formatTest("{0} = {1:safe}", taintedRanges, "answer", 42));
     REQUIRE(1 == taintedRanges.size());
     REQUIRE(0 == taintedRanges[0].lowerBound);
-    REQUIRE(5 == taintedRanges[0].upperBound);
+    REQUIRE(6 == taintedRanges[0].upperBound);
   }
   SECTION("answer:safe = 42:safe") {
     REQUIRE("answer = 42" == formatTest("{0:safe} = {1:safe}", taintedRanges, "answer", 42));
@@ -111,13 +111,13 @@ TEST_CASE("ArgsInDifferentPositions") {
     REQUIRE("42 is the answer" == formatTest("{1:safe} is the {0}", taintedRanges, "answer", 42));
     REQUIRE(1 == taintedRanges.size());
     REQUIRE(10 == taintedRanges[0].lowerBound);
-    REQUIRE(15 == taintedRanges[0].upperBound);
+    REQUIRE(16 == taintedRanges[0].upperBound);
   }
   SECTION("42 is the answer:safe") {
     REQUIRE("42 is the answer" == formatTest("{1} is the {0:safe}", taintedRanges, "answer", 42));
     REQUIRE(1 == taintedRanges.size());
     REQUIRE(0 == taintedRanges[0].lowerBound);
-    REQUIRE(1 == taintedRanges[0].upperBound);
+    REQUIRE(2 == taintedRanges[0].upperBound);
   }
   SECTION("42:safe is the answer:safe") {
     REQUIRE("42 is the answer" == formatTest("{1:safe} is the {0:safe}", taintedRanges, "answer", 42));
@@ -127,15 +127,15 @@ TEST_CASE("ArgsInDifferentPositions") {
     REQUIRE("abracadabra" == formatTest("{0:safe}{1}{0}", taintedRanges, "abra", "cad"));
     REQUIRE(2 == taintedRanges.size());
     REQUIRE(4 == taintedRanges[0].lowerBound);
-    REQUIRE(6 == taintedRanges[0].upperBound);
+    REQUIRE(7 == taintedRanges[0].upperBound);
     REQUIRE(7 == taintedRanges[1].lowerBound);
-    REQUIRE(10 == taintedRanges[1].upperBound);
+    REQUIRE(11 == taintedRanges[1].upperBound);
   }
   SECTION("abra{:safe}cad{:safe}abra") {
     REQUIRE("abracadabra" == formatTest("{0:safe}{1:safe}{0}", taintedRanges, "abra", "cad"));
     REQUIRE(1 == taintedRanges.size());
     REQUIRE(7 == taintedRanges[0].lowerBound);
-    REQUIRE(10 == taintedRanges[0].upperBound);
+    REQUIRE(11 == taintedRanges[0].upperBound);
   }
   SECTION("abra{:safe}cad{:safe}abra{:safe}") {
     REQUIRE("abracadabra" == formatTest("{0:safe}{1:safe}{0:safe}", taintedRanges, "abra", "cad"));
@@ -145,21 +145,21 @@ TEST_CASE("ArgsInDifferentPositions") {
     REQUIRE("abracadabra" == formatTest("{0}{1:safe}{0:safe}", taintedRanges, "abra", "cad"));
     REQUIRE(1 == taintedRanges.size());
     REQUIRE(0 == taintedRanges[0].lowerBound);
-    REQUIRE(3 == taintedRanges[0].upperBound);
+    REQUIRE(4 == taintedRanges[0].upperBound);
   }
   SECTION("abracadabra{:safe}") {
     REQUIRE("abracadabra" == formatTest("{0}{1}{0:safe}", taintedRanges, "abra", "cad"));
     REQUIRE(2 == taintedRanges.size());
     REQUIRE(0 == taintedRanges[0].lowerBound);
-    REQUIRE(3 == taintedRanges[0].upperBound);
+    REQUIRE(4 == taintedRanges[0].upperBound);
     REQUIRE(4 == taintedRanges[1].lowerBound);
-    REQUIRE(6 == taintedRanges[1].upperBound);
+    REQUIRE(7 == taintedRanges[1].upperBound);
   }
   SECTION("abra{:safe}cadabra{:safe}") {
     REQUIRE("abracadabra" == formatTest("{0:safe}{1}{0:safe}", taintedRanges, "abra", "cad"));
     REQUIRE(1 == taintedRanges.size());
     REQUIRE(4 == taintedRanges[0].lowerBound);
-    REQUIRE(6 == taintedRanges[0].upperBound);
+    REQUIRE(7 == taintedRanges[0].upperBound);
   }
 }
 
@@ -173,7 +173,7 @@ TEST_CASE("Escape") {
     REQUIRE("{42}" == formatTest("{{{0}}}", taintedRanges, 42));
     REQUIRE(1 == taintedRanges.size());
     REQUIRE(1 == taintedRanges[0].lowerBound);
-    REQUIRE(2 == taintedRanges[0].upperBound);
+    REQUIRE(3 == taintedRanges[0].upperBound);
   }
 }
 
@@ -183,7 +183,7 @@ TEST_CASE("FormatHex") {
     REQUIRE("0" == formatTest("{0:x}", taintedRanges, 0));
     REQUIRE(1 == taintedRanges.size());
     REQUIRE(0 == taintedRanges[0].lowerBound);
-    REQUIRE(0 == taintedRanges[0].upperBound);
+    REQUIRE(1 == taintedRanges[0].upperBound);
   }
   SECTION("0:safe:x") {
     REQUIRE("0" == formatTest("{0:safe:x}", taintedRanges, 0));
@@ -197,7 +197,7 @@ TEST_CASE("FormatHex") {
     REQUIRE("42" == formatTest("{0:x}", taintedRanges, 0x42));
     REQUIRE(1 == taintedRanges.size());
     REQUIRE(0 == taintedRanges[0].lowerBound);
-    REQUIRE(1 == taintedRanges[0].upperBound);
+    REQUIRE(2 == taintedRanges[0].upperBound);
   }
   SECTION("42:safe:x") {
     REQUIRE("42" == formatTest("{0:safe:x}", taintedRanges, 0x42));
@@ -211,7 +211,7 @@ TEST_CASE("FormatHex") {
     REQUIRE("90abcdef" == formatTest("{0:x}", taintedRanges, 0x90abcdef));
     REQUIRE(1 == taintedRanges.size());
     REQUIRE(0 == taintedRanges[0].lowerBound);
-    REQUIRE(7 == taintedRanges[0].upperBound);
+    REQUIRE(8 == taintedRanges[0].upperBound);
   }
 }
 
@@ -221,11 +221,13 @@ TEST_CASE("AutoArgIndex") {
     REQUIRE("abc" == formatTest("{}{}{}", taintedRanges, 'a', 'b', 'c'));
     REQUIRE(3 == taintedRanges.size());
     REQUIRE(0 == taintedRanges[0].lowerBound);
-    REQUIRE(0 == taintedRanges[0].upperBound);
+    REQUIRE(1 == taintedRanges[0].upperBound);
+
     REQUIRE(1 == taintedRanges[1].lowerBound);
-    REQUIRE(1 == taintedRanges[1].lowerBound);
-    REQUIRE(2 == taintedRanges[2].upperBound);
-    REQUIRE(2 == taintedRanges[2].upperBound);
+    REQUIRE(2 == taintedRanges[1].upperBound);
+
+    REQUIRE(2 == taintedRanges[2].lowerBound);
+    REQUIRE(3 == taintedRanges[2].upperBound);
   }
   SECTION("{0}{}") {
     REQUIRE_THROWS_WITH(formatTest("{0}{}", taintedRanges, 'a', 'b'),
@@ -239,7 +241,7 @@ TEST_CASE("AutoArgIndex") {
     REQUIRE("1.2" == formatTest("{:.{}}", taintedRanges, 1.2345, 2));
     REQUIRE(1 == taintedRanges.size());
     REQUIRE(0 == taintedRanges[0].lowerBound);
-    REQUIRE(2 == taintedRanges[0].upperBound);
+    REQUIRE(3 == taintedRanges[0].upperBound);
   }
   SECTION("1.2:safe:.{}") {
     REQUIRE("1.2" == formatTest("{:safe:.{}}", taintedRanges, 1.2345, 2));
@@ -266,7 +268,7 @@ TEST_CASE("EmptySpecs") {
     REQUIRE("42" == formatTest("{0:}", taintedRanges, 42));
     REQUIRE(1 == taintedRanges.size());
     REQUIRE(0 == taintedRanges[0].lowerBound);
-    REQUIRE(1 == taintedRanges[0].upperBound);
+    REQUIRE(2 == taintedRanges[0].upperBound);
   }
   SECTION("42::safe") {
     REQUIRE("42" == formatTest("{0::safe}", taintedRanges, 42));
@@ -284,7 +286,7 @@ TEST_CASE("LeftAlign") {
     REQUIRE("42  " == formatTest("{0:<4}", taintedRanges, 42));
     REQUIRE(1 == taintedRanges.size());
     REQUIRE(0 == taintedRanges[0].lowerBound);
-    REQUIRE(3 == taintedRanges[0].upperBound);
+    REQUIRE(4 == taintedRanges[0].upperBound);
   }
   SECTION("{0:safe:<4}") {
     REQUIRE("42  " == formatTest("{0:safe:<4}", taintedRanges, 42));
@@ -298,7 +300,7 @@ TEST_CASE("LeftAlign") {
     REQUIRE("42  " == formatTest("{0:<4o}", taintedRanges, 042));
     REQUIRE(1 == taintedRanges.size());
     REQUIRE(0 == taintedRanges[0].lowerBound);
-    REQUIRE(3 == taintedRanges[0].upperBound);
+    REQUIRE(4 == taintedRanges[0].upperBound);
   }
   SECTION("{0:safe:<4o}") {
     REQUIRE("42  " == formatTest("{0:safe:<4o}", taintedRanges, 042));
@@ -316,7 +318,7 @@ TEST_CASE("RightAlign") {
     REQUIRE("  42" == formatTest("{0:>4}", taintedRanges, 42));
     REQUIRE(1 == taintedRanges.size());
     REQUIRE(0 == taintedRanges[0].lowerBound);
-    REQUIRE(3 == taintedRanges[0].upperBound);
+    REQUIRE(4 == taintedRanges[0].upperBound);
   }
   SECTION("{0:safe:>4}") {
     REQUIRE("  42" == formatTest("{0:safe:>4}", taintedRanges, 42));
@@ -334,7 +336,7 @@ TEST_CASE("NumericAlign") {
     REQUIRE("  42" == formatTest("{0:=4}", taintedRanges, 42));
     REQUIRE(1 == taintedRanges.size());
     REQUIRE(0 == taintedRanges[0].lowerBound);
-    REQUIRE(3 == taintedRanges[0].upperBound);
+    REQUIRE(4 == taintedRanges[0].upperBound);
   }
   SECTION("{0:safe:=4}") {
     REQUIRE("  42" == formatTest("{0:safe:=4}", taintedRanges, 42));
@@ -348,7 +350,7 @@ TEST_CASE("NumericAlign") {
     REQUIRE("+ 42" == formatTest("{0:=+4}", taintedRanges, 42));
     REQUIRE(1 == taintedRanges.size());
     REQUIRE(0 == taintedRanges[0].lowerBound);
-    REQUIRE(3 == taintedRanges[0].upperBound);
+    REQUIRE(4 == taintedRanges[0].upperBound);
   }
   SECTION("{0:safe:=+4}") {
     REQUIRE("+ 42" == formatTest("{0:safe:=+4}", taintedRanges, 42));
@@ -366,7 +368,7 @@ TEST_CASE("CenterAlign") {
     REQUIRE(" 42  " == formatTest("{0:^5}", taintedRanges, 42));
     REQUIRE(1 == taintedRanges.size());
     REQUIRE(0 == taintedRanges[0].lowerBound);
-    REQUIRE(4 == taintedRanges[0].upperBound);
+    REQUIRE(5 == taintedRanges[0].upperBound);
   }
   SECTION("{0:safe:^5}") {
     REQUIRE(" 42  " == formatTest("{0:safe:^5}", taintedRanges, 42));
@@ -376,7 +378,7 @@ TEST_CASE("CenterAlign") {
     REQUIRE(" -42  " == formatTest("{0:^6}", taintedRanges, -42.0));
     REQUIRE(1 == taintedRanges.size());
     REQUIRE(0 == taintedRanges[0].lowerBound);
-    REQUIRE(5 == taintedRanges[0].upperBound);
+    REQUIRE(6 == taintedRanges[0].upperBound);
   }
   SECTION("{0:safe:^6}") {
     REQUIRE(" -42  " == formatTest("{0:safe:^6}", taintedRanges, -42.0));
@@ -390,7 +392,7 @@ TEST_CASE("CenterAlign") {
     REQUIRE(" 0xface " == formatTest("{0:^8}", taintedRanges, reinterpret_cast<void *>(0xface)));
     REQUIRE(1 == taintedRanges.size());
     REQUIRE(0 == taintedRanges[0].lowerBound);
-    REQUIRE(7 == taintedRanges[0].upperBound);
+    REQUIRE(8 == taintedRanges[0].upperBound);
   }
   SECTION("{0:safe:^8}") {
     REQUIRE(" 0xface " == formatTest("{0:safe:^8}", taintedRanges, reinterpret_cast<void *>(0xface)));
@@ -416,7 +418,7 @@ TEST_CASE("Fill") {
     REQUIRE("**42" == formatTest("{0:*>4}", taintedRanges, 42));
     REQUIRE(1 == taintedRanges.size());
     REQUIRE(0 == taintedRanges[0].lowerBound);
-    REQUIRE(3 == taintedRanges[0].upperBound);
+    REQUIRE(4 == taintedRanges[0].upperBound);
   }
   SECTION("{0:safe:*>4}") {
     REQUIRE("**42" == formatTest("{0:safe:*>4}", taintedRanges, 42));
@@ -430,7 +432,7 @@ TEST_CASE("Fill") {
     REQUIRE("**0xface" == formatTest("{0:*>8}", taintedRanges, reinterpret_cast<void *>(0xface)));
     REQUIRE(1 == taintedRanges.size());
     REQUIRE(0 == taintedRanges[0].lowerBound);
-    REQUIRE(7 == taintedRanges[0].upperBound);
+    REQUIRE(8 == taintedRanges[0].upperBound);
   }
 }
 
@@ -440,7 +442,7 @@ TEST_CASE("PlusSign") {
     REQUIRE("+42" == formatTest("{0:+}", taintedRanges, 42));
     REQUIRE(1 == taintedRanges.size());
     REQUIRE(0 == taintedRanges[0].lowerBound);
-    REQUIRE(2 == taintedRanges[0].upperBound);
+    REQUIRE(3 == taintedRanges[0].upperBound);
   }
   SECTION("{0:safe:+}") {
     REQUIRE("+42" == formatTest("{0:safe:+}", taintedRanges, 42));
@@ -458,7 +460,7 @@ TEST_CASE("SpaceSign") {
     REQUIRE(" 42" == formatTest("{0: }", taintedRanges, 42));
     REQUIRE(1 == taintedRanges.size());
     REQUIRE(0 == taintedRanges[0].lowerBound);
-    REQUIRE(2 == taintedRanges[0].upperBound);
+    REQUIRE(3 == taintedRanges[0].upperBound);
   }
   SECTION("{0:safe: }") {
     REQUIRE(" 42" == formatTest("{0:safe: }", taintedRanges, 42));
@@ -472,7 +474,7 @@ TEST_CASE("SpaceSign") {
     REQUIRE("-42" == formatTest("{0: }", taintedRanges, -42));
     REQUIRE(1 == taintedRanges.size());
     REQUIRE(0 == taintedRanges[0].lowerBound);
-    REQUIRE(2 == taintedRanges[0].upperBound);
+    REQUIRE(3 == taintedRanges[0].upperBound);
   }
   SECTION("{0:safe: }-") {
     REQUIRE("-42" == formatTest("{0:safe: }", taintedRanges, -42));
@@ -499,7 +501,7 @@ TEST_CASE("HashFlag") {
     REQUIRE("42" == formatTest("{0:#}", taintedRanges, 42));
     REQUIRE(1 == taintedRanges.size());
     REQUIRE(0 == taintedRanges[0].lowerBound);
-    REQUIRE(1 == taintedRanges[0].upperBound);
+    REQUIRE(2 == taintedRanges[0].upperBound);
   }
   SECTION("{0:safe:#}") {
     REQUIRE("42" == formatTest("{0:safe:#}", taintedRanges, 42));
@@ -513,7 +515,7 @@ TEST_CASE("HashFlag") {
     REQUIRE("-42" == formatTest("{0:#}", taintedRanges, -42));
     REQUIRE(1 == taintedRanges.size());
     REQUIRE(0 == taintedRanges[0].lowerBound);
-    REQUIRE(2 == taintedRanges[0].upperBound);
+    REQUIRE(3 == taintedRanges[0].upperBound);
   }
   SECTION("{0:safe:#}-") {
     REQUIRE("-42" == formatTest("{0:safe:#}", taintedRanges, -42));
@@ -527,7 +529,7 @@ TEST_CASE("HashFlag") {
     REQUIRE("0b101010" == formatTest("{0:#b}", taintedRanges, 42));
     REQUIRE(1 == taintedRanges.size());
     REQUIRE(0 == taintedRanges[0].lowerBound);
-    REQUIRE(7 == taintedRanges[0].upperBound);
+    REQUIRE(8 == taintedRanges[0].upperBound);
   }
   SECTION("{0:safe:#b}") {
     REQUIRE("0b101010" == formatTest("{0:safe:#b}", taintedRanges, 42));
@@ -541,19 +543,19 @@ TEST_CASE("HashFlag") {
     REQUIRE("-0b101010" == formatTest("{0:#b}", taintedRanges, -42));
     REQUIRE(1 == taintedRanges.size());
     REQUIRE(0 == taintedRanges[0].lowerBound);
-    REQUIRE(8 == taintedRanges[0].upperBound);
+    REQUIRE(9 == taintedRanges[0].upperBound);
   }
   SECTION("{0:#o}") {
     REQUIRE("-042" == formatTest("{0:#o}", taintedRanges, -042));
     REQUIRE(1 == taintedRanges.size());
     REQUIRE(0 == taintedRanges[0].lowerBound);
-    REQUIRE(3 == taintedRanges[0].upperBound);
+    REQUIRE(4 == taintedRanges[0].upperBound);
   }
   SECTION("{0:#} -42.0") {
     REQUIRE("-42.0000" == formatTest("{0:#}", taintedRanges, -42.0));
     REQUIRE(1 == taintedRanges.size());
     REQUIRE(0 == taintedRanges[0].lowerBound);
-    REQUIRE(7 == taintedRanges[0].upperBound);
+    REQUIRE(8 == taintedRanges[0].upperBound);
   }
   SECTION("{0:safe:#} -42.0") {
     REQUIRE("-42.0000" == formatTest("{0:safe:#}", taintedRanges, -42.0));
@@ -570,7 +572,7 @@ TEST_CASE("ZeroFlag") {
     REQUIRE("42" == formatTest("{0:0}", taintedRanges, 42));
     REQUIRE(1 == taintedRanges.size());
     REQUIRE(0 == taintedRanges[0].lowerBound);
-    REQUIRE(1 == taintedRanges[0].upperBound);
+    REQUIRE(2 == taintedRanges[0].upperBound);
   }
   SECTION("{0:safe:0}") {
     REQUIRE("42" == formatTest("{0:safe:0}", taintedRanges, 42));
@@ -585,7 +587,7 @@ TEST_CASE("ZeroFlag") {
     REQUIRE("-0042" == formatTest("{0:05}", taintedRanges, -42));
     REQUIRE(1 == taintedRanges.size());
     REQUIRE(0 == taintedRanges[0].lowerBound);
-    REQUIRE(4 == taintedRanges[0].upperBound);
+    REQUIRE(5 == taintedRanges[0].upperBound);
   }
   SECTION("{0:safe:05}") {
     REQUIRE("-0042" == formatTest("{0:safe:05}", taintedRanges, -42));
@@ -599,7 +601,7 @@ TEST_CASE("ZeroFlag") {
     REQUIRE("00042" == formatTest("{0:05}", taintedRanges, 42u));
     REQUIRE(1 == taintedRanges.size());
     REQUIRE(0 == taintedRanges[0].lowerBound);
-    REQUIRE(4 == taintedRanges[0].upperBound);
+    REQUIRE(5 == taintedRanges[0].upperBound);
   }
   SECTION("{0:safe:05}u") {
     REQUIRE("00042" == formatTest("{0:safe:05}", taintedRanges, 42u));
@@ -656,7 +658,7 @@ TEST_CASE("Width") {
     REQUIRE("   -42" == formatTest("{0:6}", taintedRanges, -42ll));
     REQUIRE(1 == taintedRanges.size());
     REQUIRE(0 == taintedRanges[0].lowerBound);
-    REQUIRE(5 == taintedRanges[0].upperBound);
+    REQUIRE(6 == taintedRanges[0].upperBound);
   }
   SECTION("{0:safe:6}") {
     REQUIRE("   -42" == formatTest("{0:safe:6}", taintedRanges, -42ll));
@@ -670,7 +672,7 @@ TEST_CASE("Width") {
     REQUIRE("str         " == formatTest("{0:12}", taintedRanges, "str"));
     REQUIRE(1 == taintedRanges.size());
     REQUIRE(0 == taintedRanges[0].lowerBound);
-    REQUIRE(11 == taintedRanges[0].upperBound);
+    REQUIRE(12 == taintedRanges[0].upperBound);
   }
   SECTION("{0:safe:12}") {
     REQUIRE("str         " == formatTest("{0:safe:12}", taintedRanges, "str"));
@@ -705,7 +707,7 @@ TEST_CASE("Precision") {
     REQUIRE("st" == formatTest("{0:.2}", taintedRanges, "str"));
     REQUIRE(1 == taintedRanges.size());
     REQUIRE(0 == taintedRanges[0].lowerBound);
-    REQUIRE(1 == taintedRanges[0].upperBound);
+    REQUIRE(2 == taintedRanges[0].upperBound);
   }
   SECTION("{0:safe:.2}") {
     REQUIRE("st" == formatTest("{0:safe:.2}", taintedRanges, "str"));
@@ -723,7 +725,7 @@ TEST_CASE("FormatBool") {
     REQUIRE("true" == formatTest("{}", taintedRanges, true));
     REQUIRE(1 == taintedRanges.size());
     REQUIRE(0 == taintedRanges[0].lowerBound);
-    REQUIRE(3 == taintedRanges[0].upperBound);
+    REQUIRE(4 == taintedRanges[0].upperBound);
   }
   SECTION("{:safe}true") {
     REQUIRE("true" == formatTest("{:safe}", taintedRanges, true));
@@ -733,7 +735,7 @@ TEST_CASE("FormatBool") {
     REQUIRE("false" == formatTest("{}", taintedRanges, false));
     REQUIRE(1 == taintedRanges.size());
     REQUIRE(0 == taintedRanges[0].lowerBound);
-    REQUIRE(4 == taintedRanges[0].upperBound);
+    REQUIRE(5 == taintedRanges[0].upperBound);
   }
   SECTION("{:safe}false") {
     REQUIRE("false" == formatTest("{:safe}", taintedRanges, false));
@@ -743,7 +745,7 @@ TEST_CASE("FormatBool") {
     REQUIRE("1" == formatTest("{:d}", taintedRanges, true));
     REQUIRE(1 == taintedRanges.size());
     REQUIRE(0 == taintedRanges[0].lowerBound);
-    REQUIRE(0 == taintedRanges[0].upperBound);
+    REQUIRE(1 == taintedRanges[0].upperBound);
   }
   SECTION("{:safe:d}") {
     REQUIRE("1" == formatTest("{:safe:d}", taintedRanges, true));
@@ -757,7 +759,7 @@ TEST_CASE("FormatBool") {
     REQUIRE("true " == formatTest("{:5}", taintedRanges, true));
     REQUIRE(1 == taintedRanges.size());
     REQUIRE(0 == taintedRanges[0].lowerBound);
-    REQUIRE(4 == taintedRanges[0].upperBound);
+    REQUIRE(5 == taintedRanges[0].upperBound);
   }
 }
 
@@ -767,7 +769,7 @@ TEST_CASE("FormatBin") {
     REQUIRE("11000000111001" == formatTest("{0:b}", taintedRanges, 12345));
     REQUIRE(1 == taintedRanges.size());
     REQUIRE(0 == taintedRanges[0].lowerBound);
-    REQUIRE(13 == taintedRanges[0].upperBound);
+    REQUIRE(14 == taintedRanges[0].upperBound);
   }
   SECTION("{0:safe:b}") {
     REQUIRE("11000000111001" == formatTest("{0:safe:b}", taintedRanges, 12345));
@@ -785,7 +787,7 @@ TEST_CASE("FormatDec") {
     REQUIRE("67890" == formatTest("{0}", taintedRanges, 67890));
     REQUIRE(1 == taintedRanges.size());
     REQUIRE(0 == taintedRanges[0].lowerBound);
-    REQUIRE(4 == taintedRanges[0].upperBound);
+    REQUIRE(5 == taintedRanges[0].upperBound);
   }
   SECTION("{0:safe}") {
     REQUIRE("67890" == formatTest("{0:safe}", taintedRanges, 67890));
@@ -799,7 +801,7 @@ TEST_CASE("FormatFloat") {
     REQUIRE("392.500000" == formatTest("{0:f}", taintedRanges, 392.5f));
     REQUIRE(1 == taintedRanges.size());
     REQUIRE(0 == taintedRanges[0].lowerBound);
-    REQUIRE(9 == taintedRanges[0].upperBound);
+    REQUIRE(10 == taintedRanges[0].upperBound);
   }
   SECTION("{0:safe:f}") {
     REQUIRE("392.500000" == formatTest("{0:safe:f}", taintedRanges, 392.5f));
@@ -817,7 +819,7 @@ TEST_CASE("FormatLongDouble") {
     REQUIRE("392.65" == formatTest("{0:g}", taintedRanges, 392.65l));
     REQUIRE(1 == taintedRanges.size());
     REQUIRE(0 == taintedRanges[0].lowerBound);
-    REQUIRE(5 == taintedRanges[0].upperBound);
+    REQUIRE(6 == taintedRanges[0].upperBound);
   }
 }
 

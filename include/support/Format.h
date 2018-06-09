@@ -384,8 +384,7 @@ const Char *BasicFormatter<Char, ArgFormatter>::format(const Char *&format_str, 
   ArgFormatter(*this, spec, s - 1).visit(arg);
 
   if (!safe) {
-    size_t upperBound = writer_.size() - 1;
-    tainted_ranges.push_back(Range(lowerBound, upperBound));
+    tainted_ranges.push_back(Range(lowerBound, writer_.size()));
     associated_to_range_indexes.push_back(arg_idx);
   }
 

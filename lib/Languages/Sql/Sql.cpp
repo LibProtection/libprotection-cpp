@@ -28,7 +28,6 @@ std::pair<std::string, bool> Sql::trySqlEncode(const std::string &text, SqlToken
     };
 
     auto encoded = text;
-    replaceAll(encoded, "''", "'");
     replaceAll(encoded, "'", "''");
 
     return {encoded, true};
@@ -47,8 +46,6 @@ Token Sql::createToken(TokenType type, size_t lowerBound, size_t upperBound, con
 bool Sql::isTrivial(TokenType type, const std::string & /*unused*/) const {
   switch (static_cast<SqlTokenType>(type)) {
   case SqlTokenType::Space:
-  case SqlTokenType::CommentInput:
-  case SqlTokenType::LineComment:
   case SqlTokenType::NullLiteral:
   case SqlTokenType::FilesizeLiteral:
   case SqlTokenType::StartNationalStringLiteral:

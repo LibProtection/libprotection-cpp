@@ -28,7 +28,7 @@ std::vector<Token> RegexLanguageProvider::tokenize(const std::string &text, size
           auto tokenText = str.substr(0, matchedLength);
 
           tokens.push_back(createToken(rule.getType(), currentPosition + offset,
-                                       currentPosition + offset + tokenText.length() - 1, tokenText));
+                                       currentPosition + offset + tokenText.length(), tokenText));
 
           str = str.substr(matchedLength);
           currentPosition += matchedLength;
@@ -47,7 +47,7 @@ std::vector<Token> RegexLanguageProvider::tokenize(const std::string &text, size
     // move to next
     if (!isMatched) {
       tokens.push_back(
-          createToken(getErrorTokenType(), currentPosition + offset, currentPosition + offset, str.substr(0, 1)));
+          createToken(getErrorTokenType(), currentPosition + offset, currentPosition + offset + 1, str.substr(0, 1)));
 
       str = str.substr(1);
       ++currentPosition;
