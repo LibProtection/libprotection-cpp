@@ -1,6 +1,7 @@
 #include "protection/LanguageService.h"
 
 #include <algorithm>
+#include <unordered_map>
 
 namespace protection {
 namespace injections {
@@ -23,11 +24,14 @@ std::vector<LanguageService::TokenScope> LanguageService::getTokensScopes(const 
       }
     }
   }
-  std::vector<TokenScope> scopes;
-  for (const auto &s : scopesMap) {
-    scopes.push_back(s.second);
-  }
 
+  std::vector<TokenScope> scopes;
+  for (const auto &r : ranges) {
+    auto it = scopesMap.find(r);
+    if (it != scopesMap.end()) {
+      scopes.push_back(it->second);
+    }
+  }
   return scopes;
 }
 

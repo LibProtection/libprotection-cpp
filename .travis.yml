@@ -1,0 +1,43 @@
+language: cpp
+sudo: required
+dist: trusty
+
+os:
+  - linux
+
+matrix:
+  include:
+    - compiler: gcc
+      env:
+        - INSTALL_GCC6_FROM_PPA=1
+        - COMPILER=g++-5 C_COMPILER=gcc-5  BUILD_TYPE=Debug
+        - EXTRA_FLAGS="-fuse-ld=gold"
+
+git:
+  submodules: false
+
+before_script:
+  - git submodule update --init --recursive
+  - mkdir -p build && cd build
+  - export EXTRA_OPTIONS=""
+
+before_install:
+  - if [ -n "${INSTALL_GCC6_FROM_PPA}" ]; then
+      sudo add-apt-repository -y "ppa:ubuntu-toolchain-r/test";
+      sudo apt-get update --option Acquire::Retries=100 --option Acquire::http::Timeout="60";
+    fi
+
+install:
+  - if [ -n "${INSTALL_GCC6_FROM_PPA}" ]; then
+      travis_wait sudo -E apt-get -yq --no-install-suggests --no-install-recommends install g++-5;
+    fi
+
+
+# build step
+script:
+  - cmake -DCMAKE_C_COMPILER=${C_COMPILER} -DCMAKE_CXX_COMPILER=${COMPILER} -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DCMAKE_CXX_FLAGS="${EXTRA_FLAGS}" ${EXTRA_OPTIONS} ..
+  - make
+  - ctest -C {BUILD_TYPE} --output-on-failure
+
+after_success:
+  - echo "SUCCESS!"
