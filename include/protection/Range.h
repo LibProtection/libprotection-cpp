@@ -15,7 +15,7 @@
 #define LIBPRROTECTION_EXPORT /**/
 #endif
 
-/// Simple [begin, end] range.
+/// Simple [begin, end) range.
 struct LIBPRROTECTION_EXPORT Range {
   size_t lowerBound;
   size_t upperBound;
