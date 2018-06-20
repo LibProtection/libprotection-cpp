@@ -7,7 +7,6 @@
 
 #include <algorithm>
 #include <string>
-#include <unordered_map>
 #include <vector>
 
 namespace protection {
@@ -35,7 +34,7 @@ public:
     auto sanitizedRanges = std::vector<Range>{};
     auto languageProvider = Single<LP>::instance();
     auto tokens = languageProvider.tokenize(text);
-    auto fragments = std::unordered_map<Range, std::string>{};
+    auto fragments = std::vector<std::pair<Range, std::string>>{};
 
     // Try to sanitize all attacked text's fragments
     for (const auto &tokensScope : getTokensScopes(tokens, taintedRanges)) {
@@ -43,7 +42,7 @@ public:
       auto fragment = text.substr(range.lowerBound, range.length());
 
       auto sanitized = languageProvider.trySanitize(fragment, tokensScope.tokens[0]);
-      fragments.insert(std::make_pair(range, (sanitized.second) ? sanitized.first : fragment));
+      fragments.emplace_back(range, (sanitized.second) ? sanitized.first : fragment);
     }
 
     // Replace all attacked text's fragments with corresponding sanitized values
