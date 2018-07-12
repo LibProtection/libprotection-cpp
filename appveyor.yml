@@ -1,7 +1,6 @@
 version: 0.11.{build}
 image:
 - Visual Studio 2015
-- Ubuntu
 
 branches:
   only:
@@ -23,13 +22,8 @@ init:
 - cmd: if "%platform%"=="x64" ( set arch=Win64)
 - cmd: echo %arch%
 - ps: |
-        if ($isWindows) {
-          if ($env:APPVEYOR_BUILD_WORKER_IMAGE -eq "Visual Studio 2015") {
+        if ($env:APPVEYOR_BUILD_WORKER_IMAGE -eq "Visual Studio 2015") {
             $env:GENERATOR = "Visual Studio 14 2015 $env:arch"
-          }
-        } else {
-          $env:GENERATOR = "Unix Makefiles"
-          $env:configuration = "Release"
         }
 - ps: echo $env:GENERATOR
 - ps: echo $env:configuration
@@ -48,7 +42,6 @@ before_build:
 
 build_script:
 - cmd: cmake .. -G "%GENERATOR%" -DCMAKE_BUILD_TYPE=%configuration%
-- sh: cmake .. -G "$GENERATOR" -DCMAKE_BUILD_TYPE=$configuration
 - ps: cmake --build . --config $env:configuration
 
 test_script:
