@@ -1,3 +1,2 @@
 project(FilePathLanguageProvider)
-
-add_library(${PROJECT_NAME} FilePath.cpp)
+add_library(${PROJECT_NAME} STATIC FilePath.cpp)

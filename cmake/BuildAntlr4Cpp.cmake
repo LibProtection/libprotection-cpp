@@ -1,5 +1,7 @@
 find_package(Java COMPONENTS Runtime REQUIRED)
 
+set(ANTLR4CPP_GRAMMAR_PATH "${SUBMODULES_DIR}/libprotection-common/grammars")
+set(ANTLR4CPP_JAR_LOCATION ${SUBMODULES_DIR}/libprotection-common/antlr/antlr-4.7-complete.jar)
 set(ANTLR4CPP_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/submodules/antlr4cpp)
 set(ANTLR4CPP_SRC_DIR ${ANTLR4CPP_ROOT}/runtime/Cpp)
 
@@ -85,7 +87,7 @@ endmacro()
 macro(antlr4_add_grammar
       namespace
       grammar)
-  antlr4cpp_process_grammar(${namespace} ${grammar_lexer} ${ANTLR4CPP_GRAMMAR_PATH})
+  antlr4cpp_process_grammar(${namespace} ${grammar} ${ANTLR4CPP_GRAMMAR_PATH})
   add_library(${namespace} STATIC ${antlr4cpp_src_files_${namespace}})
   add_dependencies(${namespace} ${namespace}_lexer)
 endmacro()

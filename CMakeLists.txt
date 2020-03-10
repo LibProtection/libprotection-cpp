@@ -30,9 +30,6 @@ endif()
 set(PROTECTION_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 set(SUBMODULES_DIR ${CMAKE_CURRENT_SOURCE_DIR}/submodules)
 
-set(ANTLR4CPP_GRAMMAR_PATH "${SUBMODULES_DIR}/libprotection-common/grammars")
-set(ANTLR4CPP_JAR_LOCATION ${SUBMODULES_DIR}/libprotection-common/antlr/antlr-4.7-complete.jar)
-
 include(BuildAntlr4Cpp)
 include_directories(${ANTLR4CPP_INCLUDE_DIRS})
 link_directories(${ANTLR4CPP_LIBS})
