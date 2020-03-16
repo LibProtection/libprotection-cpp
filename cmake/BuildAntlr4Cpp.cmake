@@ -2,20 +2,20 @@ find_package(Java COMPONENTS Runtime REQUIRED)
 
 set(ANTLR4CPP_GRAMMAR_PATH "${SUBMODULES_DIR}/libprotection-common/grammars")
 set(ANTLR4CPP_JAR_LOCATION ${SUBMODULES_DIR}/libprotection-common/antlr/antlr-4.7-complete.jar)
-set(ANTLR4CPP_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/submodules/antlr4cpp)
-set(ANTLR4CPP_SRC_DIR ${ANTLR4CPP_ROOT}/runtime/Cpp)
+set(ANTLR4_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/submodules/antlr4)
+set(ANTLR4_CPP_ROOT_DIR ${ANTLR4_ROOT}/runtime/Cpp)
 
 # default path for source files
 if(NOT ANTLR4CPP_GENERATED_SRC_DIR)
   set(ANTLR4CPP_GENERATED_SRC_DIR ${CMAKE_BINARY_DIR}/antlr4cpp_generated_src)
 endif()
 
-list(APPEND ANTLR4CPP_INCLUDE_DIRS ${ANTLR4CPP_SRC_DIR}/runtime/src)
+list(APPEND ANTLR4CPP_INCLUDE_DIRS ${ANTLR4_CPP_ROOT_DIR}/runtime/src)
 foreach(src_path  misc atn dfa tree support)
-  list(APPEND ANTLR4CPP_INCLUDE_DIRS ${ANTLR4CPP_SRC_DIR}/runtime/src/${src_path})
+  list(APPEND ANTLR4CPP_INCLUDE_DIRS ${ANTLR4_CPP_ROOT_DIR}/runtime/src/${src_path})
 endforeach(src_path)
 
-file(GLOB_RECURSE ANTLR4CPP_SOURCES "${ANTLR4CPP_SRC_DIR}/runtime/src/*.cpp")
+file(GLOB_RECURSE ANTLR4CPP_SOURCES "${ANTLR4_CPP_ROOT_DIR}/runtime/src/*.cpp")
 
 add_library(antlr4_shared SHARED ${ANTLR4CPP_SOURCES})
 add_library(antlr4_static STATIC ${ANTLR4CPP_SOURCES})
