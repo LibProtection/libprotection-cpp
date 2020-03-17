@@ -26,6 +26,14 @@ function(addTest test_name file_stem)
         ${CPP_SOURCE_FILE_NAME}
         ${DEPS_OBJECT_LIBS})
 
+    if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+      if(WITH_STATIC_CRT)
+        target_compile_options(${TEST_FILE_NAME} PRIVATE "/MT$<$<CONFIG:Debug>:d>")
+      else()
+        target_compile_options(${TEST_FILE_NAME} PRIVATE "/MD$<$<CONFIG:Debug>:d>")
+      endif()
+    endif()
+
     target_link_libraries(${TEST_FILE_NAME}
         ${DEPS_LIBS}
         ${DEPS_UNPARSED_ARGUMENTS})

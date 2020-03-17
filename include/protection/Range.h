@@ -6,17 +6,17 @@
 #include <string>
 
 #ifdef _MSC_VER
-#ifdef LIBPRROTECTION_DLL
-#define LIBPRROTECTION_EXPORT __declspec(dllexport)
+#ifdef LIBPROTECTION_DLL
+#define LIBPROTECTION_EXPORT __declspec(dllexport)
 #else
-#define LIBPRROTECTION_EXPORT __declspec(dllimport)
+#define LIBPROTECTION_EXPORT __declspec(dllimport)
 #endif
 #else
-#define LIBPRROTECTION_EXPORT /**/
+#define LIBPROTECTION_EXPORT /**/
 #endif
 
 /// Simple [begin, end) range.
-struct LIBPRROTECTION_EXPORT Range {
+struct LIBPROTECTION_EXPORT Range {
   size_t lowerBound;
   size_t upperBound;
   Range(size_t lBound, size_t uBound);

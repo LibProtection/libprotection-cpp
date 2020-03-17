@@ -1,40 +1,24 @@
 find_package(Java COMPONENTS Runtime REQUIRED)
 
-set(ANTLR4CPP_GRAMMAR_PATH "${SUBMODULES_DIR}/libprotection-common/grammars")
-set(ANTLR4CPP_JAR_LOCATION ${SUBMODULES_DIR}/libprotection-common/antlr/antlr-4.7-complete.jar)
-set(ANTLR4_ROOT ${CMAKE_CURRENT_SOURCE_DIR}/submodules/antlr4)
-set(ANTLR4_CPP_ROOT_DIR ${ANTLR4_ROOT}/runtime/Cpp)
+set(ANTLR4_ROOT "${SUBMODULES_DIR}/antlr4")
+set(ANTLR4_CPP_ROOT_DIR "${ANTLR4_ROOT}/runtime/Cpp")
 
-# default path for source files
-if(NOT ANTLR4CPP_GENERATED_SRC_DIR)
-  set(ANTLR4CPP_GENERATED_SRC_DIR ${CMAKE_BINARY_DIR}/antlr4cpp_generated_src)
-endif()
+add_subdirectory(${ANTLR4_CPP_ROOT_DIR})
 
 list(APPEND ANTLR4CPP_INCLUDE_DIRS ${ANTLR4_CPP_ROOT_DIR}/runtime/src)
 foreach(src_path  misc atn dfa tree support)
   list(APPEND ANTLR4CPP_INCLUDE_DIRS ${ANTLR4_CPP_ROOT_DIR}/runtime/src/${src_path})
 endforeach(src_path)
 
-file(GLOB_RECURSE ANTLR4CPP_SOURCES "${ANTLR4_CPP_ROOT_DIR}/runtime/src/*.cpp")
+set(ANTLR4CPP_LIB_DIRS "${CMAKE_HOME_DIRECTORY}/dist")
 
-add_library(antlr4_shared SHARED ${ANTLR4CPP_SOURCES})
-add_library(antlr4_static STATIC ${ANTLR4CPP_SOURCES})
+set(ANTLR4CPP_GRAMMAR_PATH "${SUBMODULES_DIR}/libprotection-common/grammars")
+set(ANTLR4CPP_JAR_LOCATION ${SUBMODULES_DIR}/libprotection-common/antlr/antlr-4.7-complete.jar)
 
-install(TARGETS antlr4_shared DESTINATION lib)
-install(TARGETS antlr4_static ARCHIVE DESTINATION lib)
-
-set(static_lib_suffix "")
-if(MSVC)
-  set(static_lib_suffix "-static")
+# default path for source files
+if(NOT ANTLR4CPP_GENERATED_SRC_DIR)
+  set(ANTLR4CPP_GENERATED_SRC_DIR ${CMAKE_BINARY_DIR}/antlr4cpp_generated_src)
 endif()
-
-set_target_properties(antlr4_shared
-                      PROPERTIES
-                      OUTPUT_NAME antlr4-runtime)
-
-set_target_properties(antlr4_static
-                      PROPERTIES
-                      OUTPUT_NAME "antlr4-runtime${static_lib_suffix}")
 
 # macro for lexers generation
 macro(antlr4cpp_process_grammar
@@ -90,4 +74,13 @@ macro(antlr4_add_grammar
   antlr4cpp_process_grammar(${namespace} ${grammar} ${ANTLR4CPP_GRAMMAR_PATH})
   add_library(${namespace} STATIC ${antlr4cpp_src_files_${namespace}})
   add_dependencies(${namespace} ${namespace}_lexer)
+ 
+  if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC") 
+    if(WITH_STATIC_CRT)
+      target_compile_options(${namespace} PRIVATE "/MT$<$<CONFIG:Debug>:d>")
+    else()
+      target_compile_options(${namespace} PRIVATE "/MD$<$<CONFIG:Debug>:d>")
+    endif()
+  endif()
+
 endmacro()

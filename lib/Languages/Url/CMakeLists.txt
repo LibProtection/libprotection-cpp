@@ -1,3 +1,11 @@
 project(UrlLanguageProvider)
-add_library(${PROJECT_NAME} STATIC Url.cpp)
+add_library(${PROJECT_NAME} Url.cpp)
 target_link_libraries(${PROJECT_NAME} WebUtils)
+
+if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+  if(WITH_STATIC_CRT)
+    target_compile_options(${PROJECT_NAME} PRIVATE "/MT$<$<CONFIG:Debug>:d>")
+  else()
+    target_compile_options(${PROJECT_NAME} PRIVATE "/MD$<$<CONFIG:Debug>:d>")
+  endif()
+endif()

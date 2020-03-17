@@ -15,6 +15,15 @@ macro(precompileCatch target)
 
         add_library(catch.precompiled OBJECT
             ${CMAKE_CURRENT_BINARY_DIR}/catch.precompiled.cpp)
+
+        if (CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+            if (WITH_STATIC_CRT)
+                target_compile_options(catch.precompiled PRIVATE "/MT$<$<CONFIG:Debug>:d>")
+            else()
+                target_compile_options(catch.precompiled PRIVATE "/MD$<$<CONFIG:Debug>:d>")
+            endif()
+        endif()
+
     endif()
 
     set(${target} $<TARGET_OBJECTS:catch.precompiled>)

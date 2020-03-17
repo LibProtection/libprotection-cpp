@@ -3,7 +3,6 @@ project(protection)
 add_subdirectory(Support)
 add_subdirectory(Languages)
 
-
 add_library(${PROJECT_NAME} SHARED
         Range.cpp
         LanguageService.cpp
@@ -13,6 +12,14 @@ add_library(${PROJECT_NAME} SHARED
         Languages/Token.cpp
         Languages/AntlrLanguageProvider.cpp
         Languages/RegexRule.cpp)
+
+if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+  if(WITH_STATIC_CRT)
+    target_compile_options(${PROJECT_NAME} PRIVATE "/MT$<$<CONFIG:Debug>:d>")
+  else()
+    target_compile_options(${PROJECT_NAME} PRIVATE "/MD$<$<CONFIG:Debug>:d>")
+  endif()
+endif()
 
 target_link_libraries(${PROJECT_NAME} PUBLIC FilePathLanguageProvider UrlLanguageProvider SqlLanguageProvider HtmlLanguageProvider JavaScriptLanguageProvider)
 

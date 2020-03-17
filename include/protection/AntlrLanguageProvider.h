@@ -9,7 +9,7 @@
 namespace protection {
 namespace injections {
 
-class LIBPRROTECTION_EXPORT AntlrLanguageProvider : public LanguageProvider {
+class LIBPROTECTION_EXPORT AntlrLanguageProvider : public LanguageProvider {
 public:
   std::vector<Token> tokenize(const std::string &text, size_t offset = 0) const override;
 

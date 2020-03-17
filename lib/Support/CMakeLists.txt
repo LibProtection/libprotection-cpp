@@ -1,2 +1,10 @@
 project(WebUtils)
 add_library(${PROJECT_NAME} WebUtils.cpp)
+
+if(CMAKE_CXX_COMPILER_ID MATCHES "MSVC")
+  if(WITH_STATIC_CRT)
+    target_compile_options(${PROJECT_NAME} PRIVATE "/MT$<$<CONFIG:Debug>:d>")
+  else()
+    target_compile_options(${PROJECT_NAME} PRIVATE "/MD$<$<CONFIG:Debug>:d>")
+  endif()
+endif()

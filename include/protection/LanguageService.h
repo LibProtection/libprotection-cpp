@@ -12,7 +12,7 @@
 namespace protection {
 namespace injections {
 
-struct LIBPRROTECTION_EXPORT SanitizeResult {
+struct LIBPROTECTION_EXPORT SanitizeResult {
   SanitizeResult(bool sanitized, std::vector<Token> t, std::string sanitizedStr, Token token);
 
   SanitizeResult(const SanitizeResult &) = default;
@@ -27,7 +27,7 @@ struct LIBPRROTECTION_EXPORT SanitizeResult {
   Token attackToken;
 };
 
-class LIBPRROTECTION_EXPORT LanguageService {
+class LIBPROTECTION_EXPORT LanguageService {
 public:
   template <typename LP>
   static SanitizeResult trySanitize(const std::string &text, const std::vector<Range> &taintedRanges) {
@@ -90,7 +90,7 @@ public:
   }
 
 private:
-  struct LIBPRROTECTION_EXPORT TokenScope {
+  struct LIBPROTECTION_EXPORT TokenScope {
     Range range;
     std::vector<Token> tokens;
 

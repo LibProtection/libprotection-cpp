@@ -14,7 +14,7 @@ class LanguageProvider;
 
 using TokenType = size_t;
 
-struct LIBPRROTECTION_EXPORT Token {
+struct LIBPROTECTION_EXPORT Token {
   const LanguageProvider *languageProvider;
   TokenType tokenType;
   std::string text;

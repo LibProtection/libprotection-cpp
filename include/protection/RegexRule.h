@@ -11,7 +11,7 @@
 namespace protection {
 namespace injections {
 
-class LIBPRROTECTION_EXPORT RegexRule final {
+class LIBPROTECTION_EXPORT RegexRule final {
 public:
   RegexRule() = delete;
 

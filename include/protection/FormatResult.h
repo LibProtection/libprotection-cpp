@@ -9,7 +9,7 @@
 namespace protection {
 namespace injections {
 
-struct LIBPRROTECTION_EXPORT FormatResult {
+struct LIBPROTECTION_EXPORT FormatResult {
   FormatResult(std::vector<Token> t, bool detected, size_t index, const std::string &s);
   FormatResult() = default;
 

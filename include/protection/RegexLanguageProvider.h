@@ -7,7 +7,7 @@
 namespace protection {
 namespace injections {
 
-class LIBPRROTECTION_EXPORT RegexLanguageProvider : public LanguageProvider {
+class LIBPROTECTION_EXPORT RegexLanguageProvider : public LanguageProvider {
 public:
   std::vector<Token> tokenize(const std::string &text, size_t offset = 0) const override;
 
