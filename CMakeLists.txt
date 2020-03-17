@@ -33,6 +33,10 @@ endif()
 
 set(PROTECTION_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
+if(MSVC)
+  set(WITH_STATIC_CRT OFF CACHE BOOL "Enable to statically link CRT.")
+endif()
+
 include(BuildAntlr4Cpp)
 
 include_directories(${ANTLR4CPP_INCLUDE_DIRS})

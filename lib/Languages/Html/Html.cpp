@@ -35,7 +35,8 @@ std::vector<Token> Html::tokenize(const std::string &text, size_t offset) const 
 
   std::vector<Token> tokens;
 
-  for (const auto &token : AntlrLanguageProvider::tokenize(text, offset)) {
+  auto tokenz = AntlrLanguageProvider::tokenize(text, offset);
+  for (const auto &token : tokenz) {
     if (dynamic_cast<decltype(this)>(token.languageProvider) != nullptr) {
       auto htmlTokenType = static_cast<HtmlTokenType>(token.tokenType);
       switch (state) {
@@ -80,15 +81,19 @@ std::vector<Token> Html::tokenize(const std::string &text, size_t offset) const 
           }
         } break;
 
-        case HtmlTokenType::TagOpen:
-          if (std::equal(token.text.begin(), token.text.end(), std::string{"<script"}.begin(), ignoreCaseEqual)) {
+        case HtmlTokenType::TagOpen: {
+          auto scriptTag = std::string{"<script"};
+          auto scriptCloseTag = std::string{"</script"};
+
+          if (token.text.size() == scriptTag.size() &&
+			  std::equal(token.text.begin(), token.text.end(), scriptTag.begin(), ignoreCaseEqual)) {
             insideScriptTag = true;
-          } else if (std::equal(token.text.begin(), token.text.end(), std::string{"</script"}.begin(),
+          } else if (token.text.size() == scriptCloseTag.size() &&
+                     std::equal(token.text.begin(), token.text.end(), scriptCloseTag.begin(),
                                 ignoreCaseEqual)) {
             insideScriptTag = false;
           }
-          break;
-
+        } break;
         default:
           break;
         }
